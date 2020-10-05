@@ -6,6 +6,7 @@ import os.path
 import xml.etree.ElementTree as ET
 from collections import Counter
 from typing import List, Dict
+import pandas as pd
 
 
 def get_xml_data_recursive(element, counter) -> Dict:
@@ -59,23 +60,56 @@ def extract(obj: List, arr: List, key: str) -> None:
 
 def parse_annotations(annotation_folder: str) -> List[Dict]:
     """
-    Creates a list from the parsed annotations, could be expanded to create a pandas df and write to .csv
+    Creates a list from the parsed annotations
     :param annotation_folder: path to the SIXRay annotations
     :return: a list from the parsed annotations
     """
     files_all = os.listdir(annotation_folder)
-    all_annotations = []
+    all_annotations_list = []
 
     for xml_file in files_all:
         root = ET.parse(os.path.join(annotation_folder, xml_file)).getroot()
         counter = 0
         parsed_dict = get_xml_data_recursive(root, counter)
-        # Drop unnecessary data like folder, source, owner
-        parsed_dict['annotation'].pop('folder')
-        parsed_dict['annotation'].pop('owner')
-        parsed_dict['annotation'].pop('source')
-        all_annotations.append(parsed_dict)
-    return all_annotations
+        all_annotations_list += reorganize(parsed_dict)
+
+    return all_annotations_list
+
+
+def reorganize(annotation_dict):
+    """
+    Reorganize the dict extracted from the  xml
+    :param annotation_dict:
+    :return:
+    """
+    # Drop unnecessary data like folder, source, owner
+    annotation_dict['annotation'].pop('folder')
+    annotation_dict['annotation'].pop('owner')
+    annotation_dict['annotation'].pop('source')
+
+    num_of_objects = 0
+    for key in annotation_dict['annotation']:
+        if 'object' in key:
+            num_of_objects += 1
+
+    annotation_list = []
+    for i in range(num_of_objects):
+        object_num = 'object' + str(i+1)
+
+        # TODO:P06029.jpg and 8077 has an empty object just delete it
+        new_annotation = {
+            'img_name': annotation_dict['annotation']['filename'],
+            'width': annotation_dict['annotation']['size']['width'],
+            'height': annotation_dict['annotation']['size']['height'],
+            'object_type': annotation_dict['annotation'][object_num]['name'],
+            'xmin': annotation_dict['annotation'][object_num]['bndbox']['xmin'],
+            'ymin': annotation_dict['annotation'][object_num]['bndbox']['ymin'],
+            'xmax': annotation_dict['annotation'][object_num]['bndbox']['xmax'],
+            'ymax': annotation_dict['annotation'][object_num]['bndbox']['ymax'],
+        }
+        annotation_list.append(new_annotation)
+
+    return annotation_list
 
 
 def statistics(list_all_annotations):
@@ -92,6 +126,20 @@ def statistics(list_all_annotations):
         print(f'{key_stat} has values: {key_stat_values}, counting: {key_stat_values_count}')
 
 
-root_path = 'path/to/SIXRay/dataset/Annotations_Folder/containing_htmls'
+def create_csv(list_all_annotations, path_to_write, csv_name_in):
+    """
+    Create a csv file, later can be reconsidered to write data to .txt
+    :param list_all_annotations: list of all the annotations
+    :param path_to_write: path to write to
+    :param csv_name_in: name of the csv
+    """
+    df = pd.DataFrame(list_all_annotations)
+    df.to_csv(os.path.join(path_to_write, csv_name_in), index=False)
+
+
+root_path = 'Example/Path/to/Datasets/SIXRay/Annotations'
 all_annotations = parse_annotations(root_path)
-statistics(all_annotations)
+path_to_csv = 'Example/Path/to/Datasets/SIXRay/'
+csv_name = 'gt_data.csv'
+create_csv(all_annotations, path_to_csv, csv_name)
+# statistics(all_annotations)
