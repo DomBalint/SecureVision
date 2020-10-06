@@ -23,7 +23,7 @@ def plot_bboxes(img_root, csv_path, output_path, plot_num):
         for index, row in objects.iterrows():
             c1 = int(row['xmin']), int(row['ymin'])
             c2 = int(row['xmax']), int(row['ymax'])
-            cv2.rectangle(image, c1, c2, (255, 0, 0), 1)
+            cv2.rectangle(image, c1, c2, (0, 0, 255), 3)
 
         cv2.imwrite(os.path.join(output_path, name), image)
 
