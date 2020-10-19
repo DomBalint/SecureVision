@@ -97,10 +97,10 @@ def compare_results_run(base_dir, object_type, path_to_negatives):
         cv2.destroyAllWindows()
 
 
-root_path_pos = 'C:/Users/Gamer/Downloads/ELTE/Softtech/Datasets/SIXRay/tar/Positive'
-root_path_neg = 'C:/Users/Gamer/Downloads/ELTE/Softtech/Datasets/SIXRay/tar/Negative_reduced'
-path_to_csv = 'C:/Users/Gamer/Downloads/ELTE/Softtech/Datasets/SIXRay/gt_data.csv'
-out_dir = 'C:/Users/Gamer/Downloads/ELTE/Softtech/Datasets/SIXRay/output'
+root_path_pos = 'Path/To/Datasets/SIXRay/tar/Positive'
+root_path_neg = 'Path/To/Datasets/SIXRay/tar/Negative_reduced'
+path_to_csv = 'Path/To/Datasets/SIXRay/gt_data.csv'
+out_dir = 'Path/To/Datasets/SIXRay/output'
 # cropping(root_path, path_to_csv, out_dir)
 remove_small(out_dir, 'Gun', (99, 50))
 compare_results_run(out_dir, 'Gun', root_path_neg)
