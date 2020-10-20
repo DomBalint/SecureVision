@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS Feedback;
 CREATE TABLE User
 (
     id bigint NOT NULL AUTO_INCREMENT,
+    name varchar(255) NOT NULL,
     user_pass varchar(255) NOT NULL,
     user_rights int NOT NULL,
     num_feedback int,
@@ -57,27 +58,27 @@ CREATE TABLE Detection
 CREATE TABLE Annotation
 (
     id bigint NOT NULL AUTO_INCREMENT,
-    type varchar(255) NOT NULL,
+    obj_type varchar(255) NOT NULL,
     left_x double NOT NULL,
     left_y double NOT NULL,
     length double NOT NULL,
     width double NOT NULL,
-    det_id bigint NOT NULL,
+    detection_id bigint NOT NULL,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (det_id) REFERENCES Detection (id)
+    FOREIGN KEY (detection_id) REFERENCES Detection (id)
 );
 
 CREATE TABLE Feedback
 (
     id bigint NOT NULL AUTO_INCREMENT,
-    corr_type varchar(255) NOT NULL,
+    corr_obj_type varchar(255) NOT NULL,
     corr_left_x double NOT NULL,
     corr_left_y double NOT NULL,
     corr_length double NOT NULL,
     corr_width double NOT NULL,
-    det_id bigint NOT NULL,
+    detection_id bigint NOT NULL,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (det_id) REFERENCES Detection (id)
+    FOREIGN KEY (detection_id) REFERENCES Detection (id)
 );

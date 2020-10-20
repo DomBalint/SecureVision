@@ -11,8 +11,9 @@ class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
     name = Column(String(100))
-    password = Column(String(50))
+    user_pass = Column(String(50))
     user_rights = Column(Integer)
+    num_feedback = Column(Integer)
 
     def __repr__(self):
         return "<User(name='%s', user_rights='%d')>" % (self.name, self.user_rights)
@@ -31,6 +32,7 @@ class Image(Base):
     __tablename__ = 'image'
     id = Column(Integer, Sequence('image_id_seq'), primary_key=True)
     img_path = Column(String(200))
+
     cam_id = Column(Integer, ForeignKey('camera.id'))
     cam = relationship("Camera", back_populates="camera")
 
