@@ -71,7 +71,7 @@ def get_random_image(path_to_negatives):
     return images[randint(0, 10)]
 
 
-def compare_results_run(base_dir, object_type, path_to_negatives):
+def run_segmentation(base_dir, object_type, path_to_negatives):
     """
     Run the different segmentations and compare them
     :param path_to_negatives: path to the negative images that need augmentation
@@ -90,9 +90,13 @@ def compare_results_run(base_dir, object_type, path_to_negatives):
         random_img = cv2.imread(os.path.join(path_to_negatives, neg_images[randint(0, 10)]))
         width_res, height_res, _ = result.shape
         # TODO: FIND BETTER POSITIONING
-        region_of_interest = cv2.bitwise_and(np.array( random_img[500:500 + width_res, 500:500 + height_res]), np.array( random_img[500:500 + width_res, 500:500 + height_res]), mask=inverse_mask)
+        # Select the area to insert the segmented gun with a negative mask, and returns its surroundings
+        region_of_interest = cv2.bitwise_and(np.array(random_img[500:500 + width_res, 500:500 + height_res]),
+                                             np.array(random_img[500:500 + width_res, 500:500 + height_res]),
+                                             mask=inverse_mask)
+        # Add together to object and the surrounding from the other image and overwrite the part of the negative img
         random_img[500:500 + width_res, 500:500 + height_res] = (region_of_interest + result)
-        cv2.imshow('Test seg1', random_img)
+        cv2.imshow('Segmentation test', random_img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -101,6 +105,12 @@ root_path_pos = 'Path/To/Datasets/SIXRay/tar/Positive'
 root_path_neg = 'Path/To/Datasets/SIXRay/tar/Negative_reduced'
 path_to_csv = 'Path/To/Datasets/SIXRay/gt_data.csv'
 out_dir = 'Path/To/Datasets/SIXRay/output'
-# cropping(root_path, path_to_csv, out_dir)
+
+# 1. Crops out the area of interest from the positive images, like guns, knives, etc..
+cropping(root_path_pos, path_to_csv, out_dir)
+
+# 2. Removes the small objects, that are useless for augmentation
 remove_small(out_dir, 'Gun', (99, 50))
-compare_results_run(out_dir, 'Gun', root_path_neg)
+
+# 3. Runs the segmentation
+run_segmentation(out_dir, 'Gun', root_path_neg)
