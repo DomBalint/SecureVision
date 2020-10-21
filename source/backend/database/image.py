@@ -12,7 +12,7 @@ class Image(Base):
     img_path = Column(String(200))
 
     cam_id = Column(Integer, ForeignKey('camera.id'))
-    cam = relationship("Camera", back_populates="image")
+    camera = relationship("Camera", backref="images")
 
     def __repr__(self):
         return "<Image(id='%d', img_path='%s')>" % (self.id, self.img_path)

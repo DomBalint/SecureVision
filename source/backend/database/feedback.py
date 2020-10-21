@@ -15,7 +15,7 @@ class Feedback(Base):
     corr_length = Column(Float)
     corr_width = Column(Float)
     detection_id = Column(Integer, ForeignKey('detection.id'))
-    detection = relationship("Detection", back_populates="feedback")
+    detection = relationship("Detection", backref="feedback")
 
     def __repr__(self):
         return "<Feedback(id='%s', obj_type='%s')>" % (self.id, self.corr_obj_type)

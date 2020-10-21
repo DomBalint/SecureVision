@@ -15,7 +15,7 @@ class Annotation(Base):
     length = Column(Float)
     width = Column(Float)
     detection_id = Column(Integer, ForeignKey('detection.id'))
-    detection = relationship("Detection", back_populates="annotation")
+    detection = relationship("Detection", backref="annotation")
 
     def __repr__(self):
         return "<Annotation(id='%s', obj_type='%s')>" % (self.id, self.obj_type)
