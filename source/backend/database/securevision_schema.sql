@@ -50,7 +50,7 @@ CREATE TABLE Detection
     img_id bigint NOT NULL,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (img_id) REFERENCES Image (id),
+    FOREIGN KEY (img_id) REFERENCES Image (id)
 
 );
 
