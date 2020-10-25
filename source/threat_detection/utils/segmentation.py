@@ -68,16 +68,22 @@ def remove_small(base_dir, object_type, min_dim):
                 os.remove(img_path)
 
 
-def rescale(img, scale):
+def rescale(img, negative_img):
     """
 
     :param img: The image of the object that needs to be segmented
-    :param scale: the scaling ratio between the height and width of the negative image and the object
+    :param negative_img: negative image as an numpy array
     :return:
     """
-    ratio = scale[1] / scale[0]
-    resize = randint(1, int(np.max(scale) / 2))
-    img = img.resize((round(img.size[0] * (resize/ratio)), round(img.size[1] * resize)))
+
+    threat_w, threat_h = img.size
+    negative_img_w, negative_img_h = negative_img.size
+    ratio = negative_img_w / negative_img_h
+    max_dim_obj = np.max([threat_w, threat_h])
+    max_dim_neg = np.max([negative_img_w, negative_img_h])
+    max_resize = max_dim_neg/max_dim_obj
+    resize = randint(1, int(max_resize / 2))
+    img = img.resize((round(img.size[0] * (resize*ratio)), round(img.size[1] * resize)))
     return img
 
 
@@ -97,29 +103,6 @@ def area_of_interest(base_img, inv_mask, obj_width, obj_height):
     return aoi
 
 
-def get_avg_size_ratios(base_dir, object_type, path_to_negatives):
-    """
-    Calculate the object ratios to the negative images
-    :param base_dir: Base dir of the segmentation, like the cropped "Gun" folder
-    :param object_type: Specifying the type of the object
-    :param path_to_negatives: path to the negative images that need augmentation
-    :return:
-    """
-    if not os.path.exists(os.path.join(base_dir, object_type, 'size_scale.txt')):
-        avg_size_mistmatch = np.array([0, 0]).astype(float)
-        images = os.listdir(os.path.join(base_dir, object_type))
-        negatives = os.listdir(path_to_negatives)
-        for image in tqdm.tqdm(images, 'Avg scale'):
-            img_path = os.path.join(base_dir, object_type, image)
-            rand_path = os.path.join(path_to_negatives, negatives[randint(0, len(negatives))])
-            random_negative = Image.open(rand_path).convert('RGB')
-            threat_obj = Image.open(img_path).convert('RGB')
-            avg_size_mistmatch += np.array(np.array(random_negative.size) / np.array(threat_obj.size)).astype(float)
-        np.savetxt(os.path.join(base_dir, object_type, 'size_scale.txt'), avg_size_mistmatch / len(images))
-        return avg_size_mistmatch / len(images)
-    return np.loadtxt(os.path.join(base_dir, object_type, 'size_scale.txt'))
-
-
 def run_segmentation(base_dir, object_type, path_to_negatives):
     """
     Run the different segmentations and compare them
@@ -136,19 +119,18 @@ def run_segmentation(base_dir, object_type, path_to_negatives):
             img_path = os.path.join(base_dir, object_type, image)
             rand_path = os.path.join(path_to_negatives, negatives[randint(0, len(negatives))])
             random_negative = Image.open(rand_path).convert('RGB')
-            random_negative_cv = np.array(random_negative)
-            random_negative_cv = random_negative_cv[:, :, ::-1].copy()
 
             threat_obj = Image.open(img_path).convert('RGB')
             # Random resize
-            threat_obj = rescale(threat_obj, np.loadtxt(os.path.join(base_dir, object_type, 'size_scale.txt')))
+            threat_obj = rescale(threat_obj, random_negative)
             # Random rotation
             threat_obj = threat_obj.rotate(randint(0, 360), expand=True)
             threat_obj_cv = np.array(threat_obj)
             threat_obj_cv = threat_obj_cv[:, :, ::-1].copy()
-            cv2.imshow('R', np.array(threat_obj_cv))
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+
+            random_negative_cv = np.array(random_negative)
+            random_negative_cv = random_negative_cv[:, :, ::-1].copy()
+
             # TODO: Handle bounding box and annotation generation
             low_blue = np.array([55, 0, 0])
             high_blue = np.array([118, 255, 255])
@@ -169,10 +151,7 @@ path_to_csv = '/Datasets/SIXRay/gt_data.csv'
 out_dir = '/Datasets/SIXRay/output'
 
 # 1. Crops out the area of interest from the positive images, like guns, knives, etc..
-cropping(root_path_pos, path_to_csv, out_dir)
-# 2. Get average size scale between obj and negative images
-
-avg_scale = get_avg_size_ratios(out_dir, 'Gun', root_path_neg)
+# cropping(root_path_pos, path_to_csv, out_dir)
 
 # 2. Removes the small objects, that are useless for augmentation
 remove_small(out_dir, 'Gun', (99, 50))
