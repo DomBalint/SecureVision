@@ -39,11 +39,8 @@ def segmentation(img, low_hsv, high_hsv, negate):
     :param high_hsv: segmentation rule based: specifying color boundaries
     :param negate: specify if return the negate of the mask
     """
-    blur = cv2.blur(np.array(img), (5, 5))
-    blur0 = cv2.medianBlur(blur, 5)
-    blur1 = cv2.GaussianBlur(blur0, (5, 5), 0)
-    blur2 = cv2.bilateralFilter(blur1, 9, 75, 75)
-    hsv = cv2.cvtColor(blur2, cv2.COLOR_BGR2HSV)
+
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     mask = cv2.inRange(hsv, low_hsv, high_hsv)
     if negate:
@@ -79,11 +76,10 @@ def rescale(img, negative_img):
     threat_w, threat_h = img.size
     negative_img_w, negative_img_h = negative_img.size
     ratio = negative_img_w / negative_img_h
-    max_dim_obj = np.max([threat_w, threat_h])
-    max_dim_neg = np.max([negative_img_w, negative_img_h])
-    max_resize = max_dim_neg/max_dim_obj
-    resize = randint(1, int(max_resize / 2))
-    img = img.resize((round(img.size[0] * (resize*ratio)), round(img.size[1] * resize)))
+    max_resize = np.max(np.array([negative_img_w, negative_img_h] / np.array([threat_w, threat_h])))
+    resize_lin = np.linspace(1, max_resize/3, num=10)
+    random_index = randint(0, len(resize_lin)-1)
+    img = img.resize((round(img.size[0] * (resize_lin[random_index]*ratio)), round(img.size[1] * resize_lin[random_index])))
     return img
 
 
@@ -136,7 +132,6 @@ def run_segmentation(base_dir, object_type, path_to_negatives):
             high_blue = np.array([118, 255, 255])
             result, mask = segmentation(threat_obj_cv, low_blue, high_blue, False)
             aoi_background = area_of_interest(random_negative_cv, ~mask, result.shape[0], result.shape[1])
-
             # TODO: FIND BETTER POSITIONING
             # Add together to object and the surrounding from the other image and overwrite the part of the negative img
             random_negative_cv[250:250 + result.shape[0], 250:250 + result.shape[1]] = (aoi_background + result)
