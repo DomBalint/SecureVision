@@ -106,6 +106,7 @@ def reorganize(annotation_dict):
             'ymin': annotation_dict['annotation'][object_num]['bndbox']['ymin'],
             'xmax': annotation_dict['annotation'][object_num]['bndbox']['xmax'],
             'ymax': annotation_dict['annotation'][object_num]['bndbox']['ymax'],
+            'generated': False
         }
         annotation_list.append(new_annotation)
 

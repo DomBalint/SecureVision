@@ -27,6 +27,11 @@ def area(a, b):
 
 
 def create_collision_matrix(bounding_box_list):
+    """
+    Creates collision matrix for the cropping together
+    :param bounding_box_list: list of bounding boxes
+    :return:
+    """
     collision_matrix = np.zeros((len(bounding_box_list), len(bounding_box_list)))
     for a_index, rect_a in enumerate(bounding_box_list):
         for b_index, rect_b in enumerate(bounding_box_list):
@@ -174,32 +179,11 @@ def rescale(img, negative_img):
 
     threat_w, threat_h = img.size
     negative_img_w, negative_img_h = negative_img.size
-    ratio = negative_img_w / negative_img_h
     max_resize = np.max(np.array([negative_img_w, negative_img_h] / np.array([threat_w, threat_h])))
     resize_lin = np.linspace(1, max_resize / 3, num=10)
     random_index = randint(0, len(resize_lin) - 1)
     img = img.resize(
-        (round(img.size[0] * (resize_lin[random_index] * ratio)), round(img.size[1] * resize_lin[random_index])))
-    return img
-
-
-# TODO: fix the method to give better shapes
-def rescale_modified(img, negative_img):
-    """
-    :param img: The image of the object that needs to be segmented
-    :param negative_img: negative image as an numpy array
-    :return:
-    """
-
-    threat_w, threat_h = img.shape[:2]
-    negative_img_w, negative_img_h = negative_img.shape[:2]
-    ratio = negative_img_w / negative_img_h
-    max_resize = np.max(np.array([negative_img_w, negative_img_h] / np.array([threat_w, threat_h])))
-    resize_lin = np.linspace(1, max_resize / 3, num=10)
-    random_index = randint(0, len(resize_lin) - 1)
-    a = round(img.shape[0] * (resize_lin[random_index] * ratio))
-    b = round(img.shape[1] * resize_lin[random_index])
-    img = cv2.resize(img, (int(a), int(b)))
+        (round(img.size[0] * (resize_lin[random_index])), round(img.size[1] * resize_lin[random_index])))
     return img
 
 
@@ -219,6 +203,7 @@ def area_of_interest(base_img, inv_mask, obj_width, obj_height):
     return aoi
 
 
+@ DeprecationWarning
 def run_segmentation(base_dir, object_type, path_to_negatives):
     """
     Run the different segmentations and compare them
@@ -260,17 +245,19 @@ def run_segmentation(base_dir, object_type, path_to_negatives):
             cv2.destroyAllWindows()
 
 
-def threshold_image(image_path):
+def threshold_image(image, verbose):
     """
     Threshold the image using otsu algorithm, to separate the foreground from the background.
     This works as (foreground-background segmentation)
-    :param image_path: full path the object image.
-    :return: the image, and the threholded image
+    :param verbose: Show image or not
+    :param image: image
+    :return: the image, and the thresholded image
     """
-    image = cv2.imread(image_path)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    cv2.imshow("image", cv2.resize(image, (960, 540)))
-    cv2.waitKey(0)
+
+    if verbose:
+        print('Showing image before segmentation')
+        cv2.imshow("image", cv2.resize(image, (960, 540)))
+        cv2.waitKey(0)
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     threshold_value, threshold_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
@@ -282,17 +269,17 @@ def threshold_image(image_path):
     return image, threshold_image
 
 
-def remove_small_regions(threshold_image):
+def remove_small_regions(threshold_image_input):
     """
     Keep only the largest connected object in the image (this is a great way to remove noise)
 
-    :param threshold_image: numpy array containing the values of the threshold image,
+    :param threshold_image_input: numpy array containing the values of the threshold image,
     :return: a processed image with only the largest element in the threshold_image.
     """
-    processed_image = np.zeros_like(threshold_image)
+    processed_image = np.zeros_like(threshold_image_input)
 
-    for val in np.unique(threshold_image)[1:]:
-        mask = np.uint8(threshold_image == val)
+    for val in np.unique(threshold_image_input)[1:]:
+        mask = np.uint8(threshold_image_input == val)
         labels, stats = cv2.connectedComponentsWithStats(mask, 4)[1:3]
         largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
         processed_image[labels == largest_label] = val
@@ -300,9 +287,11 @@ def remove_small_regions(threshold_image):
     return processed_image
 
 
-def otsu_segmentation(base_dir, object_type, path_to_negatives):
+def otsu_segmentation(base_dir, object_type, path_to_negatives, saved_images, verbose=False):
     """
     Run the otsu algorithm for background-foreground  segmentation
+    :param verbose: Show every step of the segmentation or not
+    :param saved_images: Save the images to this folder
     :param path_to_negatives: path to the negative images that need augmentation
     :param base_dir: Base dir of the segmentation, like the cropped "Gun" folder
     :param object_type: Specifying the type of the object
@@ -311,68 +300,103 @@ def otsu_segmentation(base_dir, object_type, path_to_negatives):
     images = os.listdir(os.path.join(base_dir, object_type))
     negatives = os.listdir(path_to_negatives)
     counter = 0
+    os.makedirs(saved_images, exist_ok=True)
     # TODO: Find the boundaries of the luggage
-    for image in images:
+    annotation_list = []
+    for image in tqdm.tqdm(images, 'Otsu segmentation'):
         if image.endswith('.png') or image.endswith('.jpg'):
-            try:
-                img_path = os.path.join(base_dir, object_type, image)
-                rand_path = os.path.join(path_to_negatives, negatives[randint(0, len(negatives))])
-                random_negative = cv2.imread(rand_path)
-                if random_negative is None:
-                    continue
-                random_negative = cv2.cvtColor(random_negative, cv2.COLOR_BGR2RGB)
+            img_path = os.path.join(base_dir, object_type, image)
+            rand_path = os.path.join(path_to_negatives, negatives[randint(0, len(negatives))])
+            random_negative = Image.open(rand_path).convert('RGB')
+            if random_negative is None:
+                continue
 
+            threat_obj = cv2.imread(img_path)
+
+            if verbose:
+                print('Showing random negative')
                 cv2.namedWindow("image", cv2.WINDOW_NORMAL)
                 cv2.imshow("image", cv2.resize(random_negative, (960, 540)))
                 cv2.waitKey(0)
 
-                threat_image, threshold_threat_image = threshold_image(img_path)
+            threat_image, threshold_threat_image = threshold_image(threat_obj, verbose)
+
+            if verbose:
+                print('Showing segmentation results')
                 cv2.imshow("image", cv2.resize(threshold_threat_image * 255, (960, 540)))
                 cv2.waitKey(0)
 
-                threshold_threat_image = remove_small_regions(threshold_threat_image)
+            threshold_threat_image = remove_small_regions(threshold_threat_image)
+
+            if verbose:
+                print('Cleaning segmentation results')
                 cv2.imshow("image", cv2.resize(threshold_threat_image * 255, (960, 540)))
                 cv2.waitKey(0)
 
-                # TODO: do some morphological operations to fix the image
+            # TODO: do some morphological operations to fix the image
 
-                clean_threat_object = np.expand_dims(threshold_threat_image, axis=2).repeat(3, axis=2)
-                clean_threat_object *= threat_image
-                cv2.imshow("image", cv2.resize(clean_threat_object, (960, 540)))
+            clean_threat_object = np.expand_dims(threshold_threat_image, axis=2).repeat(3, axis=2)
+            clean_threat_object *= threat_image
+            # Format here, when rotating the background has to be filled instead it distorts the image
+            # Converting to Pillow Image and resizing
+            clean_threat_object = cv2.cvtColor(clean_threat_object, cv2.COLOR_BGR2RGB)
+            clean_threat_object = Image.fromarray(clean_threat_object)
+            clean_threat_object = rescale(clean_threat_object, random_negative)
+            # Random rotation
+            clean_threat_object = clean_threat_object.rotate(randint(0, 360), expand=True, fillcolor='black')
+            clean_threat_object = np.array(clean_threat_object)
+            clean_threat_object = clean_threat_object[:, :, ::-1]
+
+            random_negative = np.array(random_negative)
+            random_negative = random_negative[:, :, ::-1]
+
+            if verbose:
+                print('Showing resized')
+                cv2.imshow("image", clean_threat_object)
                 cv2.waitKey(0)
 
-                # Rescale needs some fixing
-                clean_threat_object = rescale_modified(clean_threat_object, random_negative)
-
-                # Random rotation
-                clean_threat_object = cv2.rotate(clean_threat_object, randint(0, 360), clean_threat_object)
-
+            try:
                 # Add the threat object in a random position to the negative example
                 neg_r, neg_c = random_negative.shape[:2]
                 threat_r, threat_c = clean_threat_object.shape[:2]
                 a = randint(0, neg_r - threat_r)
                 b = randint(0, neg_c - threat_c)
 
-                # random_negative[a:a+threat_r, b:b+threat_c] = clean_threat_object[:,:]
-
                 for i, ii in zip(range(a, a + threat_r), range(threat_r)):
                     for j, jj in zip(range(b, b + threat_c), range(threat_c)):
                         for k in range(3):
                             if clean_threat_object[ii, jj, k] > 0:
-                                random_negative[i, j, k] = round(random_negative[i, j, k]*0.2 + clean_threat_object[ii, jj, k]*0.8)
+                                random_negative[i, j, k] = round(random_negative[i, j, k]*0.1 + clean_threat_object[ii, jj, k]*0.9)
 
                 # To be used in the annotation creation process (after the method has been evaluated)
-                print(f"Threat place: xmin={a}, xmax={a + threat_r}, ymin={b}, ymax={b + threat_c}")
+                # print(f"Threat place: xmin={a}, xmax={a + threat_r}, ymin={b}, ymax={b + threat_c}")
 
-                cv2.imshow("image", cv2.resize(random_negative, (960, 540)))
+                cv2.imshow("Press s to save", cv2.resize(random_negative, (960, 540)))
                 key = cv2.waitKey(0)
 
                 # if key == 's'
                 if key == 115:
                     # TODO: add to the annotations file (figure out what to do for multiple objects)
                     filename, extension = image.split(".")
-                    cv2.imwrite(os.path.join(saved_images, f"{filename}_{str(counter)}.{extension}"), random_negative)
+                    filename_rand = rand_path.split(".")[0].split('/')[-1].split('\\')[-1]
+                    cv2.imwrite(os.path.join(saved_images, f"{filename}_{filename_rand}_{str(counter)}.{extension}"),
+                                random_negative)
+
+                    new_annotation = {
+                        'img_name': f"{filename}_{filename_rand}_{str(counter)}.{extension}",
+                        'width': random_negative.shape[0],
+                        'height': random_negative.shape[1],
+                        'object_type': object_type,
+                        'xmin': a,
+                        'ymin': b,
+                        'xmax': a + threat_r,
+                        'ymax': b + threat_c,
+                        'generated': True
+                    }
+                    annotation_list.append(new_annotation)
+
                     counter += 1
+                    print('Image saved')
                 cv2.destroyAllWindows()
 
             # The shape of the threat is larger than the image itself
@@ -384,6 +408,8 @@ def otsu_segmentation(base_dir, object_type, path_to_negatives):
                 print(str(ie))
             except Exception as e:
                 print(str(e))
+    df = pd.DataFrame(annotation_list)
+    df.to_csv(os.path.join(out_dir, 'generated.csv'), index=False)
 
 
 if __name__ == '__main__':
@@ -397,12 +423,12 @@ if __name__ == '__main__':
     # 1. Crops out the area of interest from the positive images, like guns, knives, etc..
     # cropping(root_path_pos, path_to_csv, out_dir)
     # 1.5. Instead of the basic cropping it is also possible to crop the colliding bounding boxes together
-    # cropping_colliding_together(root_patssh_pos, path_to_csv, out_dir)
+    # cropping_colliding_together(root_path_pos, path_to_csv, out_dir)
 
     # 2. Removes the small objects, that are useless for augmentation
     # remove_small(out_dir, 'Gun', (99, 50))
 
     # 3. Runs the segmentation
-    otsu_segmentation(out_dir, 'Gun', root_path_neg)
+    otsu_segmentation(out_dir, 'Gun', root_path_neg, save_to)
 
     print("done...")
