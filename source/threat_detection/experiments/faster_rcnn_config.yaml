@@ -1,0 +1,29 @@
+dataloader:
+  path_df:
+    - datasets
+    - gt_data.csv
+  train_dataset:
+    dir_train:
+      - datasets
+      - train
+      - Positive
+  train_loader:
+    batch_size: 16
+    shuffle: False
+    num_workers: 4
+  valid_loader:
+    batch_size: 16
+    shuffle: False
+    num_workers: 4
+  stratifiedKFold: True
+  n_splits: 5
+
+train:
+  epochs: 67
+  path_save_model:
+  - artifacts
+  - saved_models
+  model_name: fasterrcnn_test
+  path_history:
+  - artifacts
+  - history
