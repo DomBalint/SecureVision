@@ -19,6 +19,6 @@ u1 = User.as_unique(session_obj, name='Test1', user_pass='test_pass', user_right
 # 4. Creates a Test user 2 with the same name
 u2 = User.as_unique(session_obj, name='Test1', user_pass='test_pass', user_rights=1, num_feedback=5)
 # 5. No need for session_obj.add, the function already adds them
-# 6. You will NOT get an UNIQUE error message for the user name, since its set to UNIQUE
+# 6. You will NOT get an UNIQUE error message for the user name
 session_obj.commit()
 session_obj.close()

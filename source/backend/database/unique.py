@@ -16,6 +16,7 @@ def _unique(session, cls, queryfunc, constructor, kw, unique_key='name'):
 
     key = (cls, kw.get(unique_key))
     if key in cache:
+        print(f'The {kw.get(unique_key)} {unique_key} is not unique, try something else!')
         return cache[key]
     else:
         with session.no_autoflush:
@@ -25,8 +26,10 @@ def _unique(session, cls, queryfunc, constructor, kw, unique_key='name'):
             if not obj:
                 obj = constructor(**kw)
                 session.add(obj)
+            else:
+                print(f'The {obj.name} {unique_key} is not unique, try something else!')
         cache[key] = obj
-        return obj
+        return
 
 
 class UniqueMixin(object):
