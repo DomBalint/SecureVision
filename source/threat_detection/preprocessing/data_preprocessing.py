@@ -6,6 +6,7 @@ import numpy as np
 import tqdm
 import csv
 import os
+import cv2
 
 
 def read_labels(file):
@@ -60,9 +61,21 @@ def shuffle_split_data(images_path, positive_test_split_percentage=0.2,
     return (positive_x_train, positive_x_test), (negative_x_train, negative_x_test)
 
 
-(positive_x_train, positive_x_test), (negative_x_train, negative_x_test) = shuffle_split_data("/path/to/images")
+def check_rgb(img_root):
+    """
+    Check the
+    :param img_root:
+    """
+    images = os.listdir(img_root)
+    for image in tqdm.tqdm(images, 'Checking images'):
+        img_path = os.path.join(img_root, image)
+        img = cv2.imread(img_path)
+        if img.shape[-1] != 3:
+            print(image)
 
-# TODO: add data processing here
 
+root_path = '.../Softtech/Datasets/SIXRay/tar/Positive'
+check_rgb(root_path)
+# (positive_x_train, positive_x_test), (negative_x_train, negative_x_test) = shuffle_split_data("/path/to/images")
 
 # TODO: add data augmentation code here

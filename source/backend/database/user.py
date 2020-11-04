@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import Sequence
-
+from werkzeug.security import generate_password_hash
+import json
 from SecureVision.source.backend.database.base import Base
 from SecureVision.source.backend.database.unique import UniqueMixin
 from SecureVision.source.backend.database.unique import _unique
@@ -35,3 +36,11 @@ class User(UniqueMixin, Base):
 
     def __repr__(self):
         return "<User(name='%s', user_rights='%d')>" % (self.name, self.user_rights)
+
+
+def register_users(session, json_file_path):
+    with open(json_file_path, 'r') as file:
+        data = json.load(file)
+        for employee in data['Users']:
+            User.as_unique(session, name=employee['name'], user_pass=generate_password_hash(employee['pass'], 'sha256'),
+                           user_rights=employee['rights'])
