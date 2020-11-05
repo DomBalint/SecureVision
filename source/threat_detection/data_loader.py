@@ -40,8 +40,7 @@ class SixRayDataset(Dataset):
         records = self.df.loc[(self.df['img_name'] == image_id)]
 
         image = Image.open(os.path.join(self.image_dir, image_id))
-        image = np.array(image).astype(np.float32)
-        image /= 255.0
+        image = np.array(image)
 
         bboxes = records[['xmin', 'ymin', 'xmax', 'ymax']].values
         areas = torch.as_tensor(records['area'].values, dtype=torch.float32)
@@ -68,6 +67,8 @@ class SixRayDataset(Dataset):
             target['boxes'] = bboxes_aug
 
         else:
+            image = image.astype(np.float32)
+            image /= 255.0
             sample = {
                 'image': image,
                 'bboxes': target['boxes'],
