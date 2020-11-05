@@ -191,9 +191,9 @@ def get_empty_scores_dict(data_loader):
 def train_random_holdout(config: dict):
     """"""
     cwd = os.getcwd()
-    psm = os.path.join(cwd, *config['path_save_model'])
     ph = os.path.join(cwd, *config['path_history'])
     en = config['experiment_name']
+    psm = os.path.join(cwd, *config['path_save_model'], en + '.pth')
     config_dataloader = config['dataloader']
     config_train = config['train']
     path_df = os.path.join(cwd, *config_dataloader['path_df'])
