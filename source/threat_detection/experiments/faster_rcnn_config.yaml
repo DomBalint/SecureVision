@@ -15,15 +15,18 @@ dataloader:
     batch_size: 16
     shuffle: False
     num_workers: 4
-  stratifiedKFold: True
-  n_splits: 5
 
 train:
   epochs: 67
-  path_save_model:
-  - artifacts
-  - saved_models
-  model_name: fasterrcnn_test
-  path_history:
-  - artifacts
-  - history
+  optimizer:
+    lr: 0.0005
+    momentum: 0.9
+    weight_decay: 0.0005
+
+path_save_model:
+- artifacts
+- saved_models
+experiment_name: fasterrcnn_test
+path_history:
+- artifacts
+- history

@@ -152,8 +152,8 @@ def get_train_valid_data_loaders(
 
 
 def get_train_valid_df(
-        path_df: str,
-        valid_size: float = 0.2
+    path_df: str,
+    valid_size: float = 0.2
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     """
@@ -179,7 +179,6 @@ if __name__ == '__main__':
     config_dataloader = config['dataloader']
 
     path_df = os.path.join(os.getcwd(), *config_dataloader['path_df'])
-    df = transform_df(path_df)
 
     train_trf = transforms.ImgAugTrainTransform()
     valid_trf = transforms.to_tensor()
