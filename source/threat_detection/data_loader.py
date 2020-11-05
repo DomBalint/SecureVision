@@ -40,16 +40,18 @@ class SixRayDataset(Dataset):
         records = self.df.loc[(self.df['img_name'] == image_id)]
 
         image = Image.open(os.path.join(self.image_dir, image_id))
-        image = np.array(image)
+        image = np.array(image).astype(np.float32)
+        image /= 255.0
 
         bboxes = records[['xmin', 'ymin', 'xmax', 'ymax']].values
         areas = torch.as_tensor(records['area'].values, dtype=torch.float32)
         # 1D tensor N length
         labels = torch.as_tensor(
-            [np.argmax(i) for i in records[self.labels].values]
+            [np.argmax(i) + 1 for i in records[self.labels].values],
+            dtype=torch.int64
         )
         # suppose all instances are not crowd
-        iscrowd = torch.zeros((records.shape[0]))
+        iscrowd = torch.zeros((records.shape[0]), dtype=torch.int64)
 
         target = {}
         target['boxes'] = bboxes
@@ -66,8 +68,6 @@ class SixRayDataset(Dataset):
             target['boxes'] = bboxes_aug
 
         else:
-            image = image.astype(np.float32)
-            image /= 255.0
             sample = {
                 'image': image,
                 'bboxes': target['boxes'],
