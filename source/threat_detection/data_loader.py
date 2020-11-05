@@ -109,7 +109,7 @@ def transform_df(path_df: str) -> pd.DataFrame:
     """Transforms initial df.
     """
     df = pd.read_csv(path_df)
-    df = pd.concat([df, pd.get_dummies(df['object_type'])], axis=1)
+    #df = pd.concat([df, pd.get_dummies(df['object_type'])], axis=1)
 
     areas = (df['xmax'] - df['xmin']) * (df['ymax'] - df['ymin'])
     df['area'] = areas
