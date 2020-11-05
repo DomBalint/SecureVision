@@ -1,5 +1,5 @@
 """
-Handle the camera related REST API
+DEPRACATED Handle the camera related REST API
 """
 from flask_restful import reqparse, abort, Resource
 

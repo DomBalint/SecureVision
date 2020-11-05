@@ -1,5 +1,5 @@
 """
-Handle the image related REST API
+DEPRACATED Handle the image related REST API
 """
 from flask_restful import reqparse, abort, Resource
 
