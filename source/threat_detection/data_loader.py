@@ -44,7 +44,10 @@ class SixRayDataset(Dataset):
 
         bboxes = records[['xmin', 'ymin', 'xmax', 'ymax']].values
         areas = torch.as_tensor(records['area'].values, dtype=torch.float32)
-        labels = torch.as_tensor(records[self.labels].values)
+        # 1D tensor N length
+        labels = torch.as_tensor(
+            [np.argmax(i) for i in records[self.labels].values]
+        )
         # suppose all instances are not crowd
         iscrowd = torch.zeros((records.shape[0]))
 
