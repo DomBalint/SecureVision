@@ -9,7 +9,7 @@ from PIL import Image
 import pandas as pd
 import numpy as np
 
-from utils.config_parser import parse_args, parse_yaml
+from utils.utilities import parse_args, parse_yaml
 from transformations import transforms
 
 SEED = 2020
