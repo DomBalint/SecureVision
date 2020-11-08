@@ -1,4 +1,4 @@
-from SecureVision.source.backend.database.user import User, register_users, login_user
+from SecureVision.source.backend.database.user import User
 
 
 class TestRegistration:
@@ -9,9 +9,9 @@ class TestRegistration:
 
     def test_register_users(self, register_data):
         # Setup
-        session_obj, base_created, engine, desired, json_path = register_data
+        user_handler_instance, base_created, engine, session_obj, desired, json_path = register_data
         # Exercise
-        register_users(session_obj, json_path)
+        user_handler_instance.register_users(json_path)
         in_db_names = [user.name for user in session_obj.query(User).order_by(User.id)]
         # Verify
         assert in_db_names == desired
@@ -25,13 +25,16 @@ class TestLogin:
     def cleanup(base_obj, engine):
         base_obj.metadata.drop_all(engine)
 
-    def test_register_users(self, register_data):
+    def test_register_users(self, login_data):
         # Setup
-        session_obj, base_created, engine, desired, json_path = register_data
+        user_handler_instance, base_created, engine, session_obj, desired, name = login_data
         # Exercise
-        register_users(session_obj, json_path)
-        in_db_names = [user.name for user in session_obj.query(User).order_by(User.id)]
+        user = user_handler_instance.user_by_name(name)
+        if user:
+            user_name = user.name
+        else:
+            user_name = 'None'
         # Verify
-        assert in_db_names == desired
+        assert user_name == desired
         # Cleanup
         TestRegistration.cleanup(base_created, engine)

@@ -1,7 +1,9 @@
+import json
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import Sequence
 from werkzeug.security import generate_password_hash
-import json
+
 from SecureVision.source.backend.database.base import Base
 from SecureVision.source.backend.database.unique import UniqueMixin
 from SecureVision.source.backend.database.unique import _unique
@@ -26,25 +28,42 @@ class User(UniqueMixin, Base):
     @classmethod
     def as_unique(cls, session, **kw):
         return _unique(
-                    session,
-                    cls,
-                    cls.unique_filter,
-                    cls,
-                    kw,
-                    'name'
-               )
+            session,
+            cls,
+            cls.unique_filter,
+            cls,
+            kw,
+            'name'
+        )
 
     def __repr__(self):
         return "<User(name='%s', user_rights='%d')>" % (self.name, self.user_rights)
 
 
-def register_users(session, json_file_path):
-    with open(json_file_path, 'r') as file:
-        data = json.load(file)
-        for employee in data['Users']:
-            User.as_unique(session, name=employee['name'], user_pass=generate_password_hash(employee['pass'], 'sha256'),
-                           user_rights=employee['rights'])
+class UserHandler:
 
+    def __init__(self, session_maker):
+        self.__session = session_maker()
 
-def login_user(session, name):
-    return session.query(User).filter(User.name == name).one()
+    def register_users(self, json_file_path):
+        with open(json_file_path, 'r') as file:
+            data = json.load(file)
+            for employee in data['Users']:
+                User.as_unique(self.__session, name=employee['name'],
+                               user_pass=generate_password_hash(employee['pass'], 'sha256'),
+                               user_rights=employee['rights'])
+        self.__session.commit()
+
+    def user_by_name(self, name):
+        return self.__session.query(User).filter(User.name == name).one_or_none()
+
+    def user_by_id(self, user_id):
+        return self.__session.query(User).filter(User.id == user_id).one_or_none()
+
+    def release_resources(self):
+        if self.__session:
+            self.__session.close()
+
+    def commit(self):
+        if self.__session:
+            self.__session.commit()
