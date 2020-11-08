@@ -1,11 +1,11 @@
 from SecureVision.source.backend.database.user import User
 
 
-class TestRegistration:
+def cleanup(base_obj, engine):
+    base_obj.metadata.drop_all(engine)
 
-    @staticmethod
-    def cleanup(base_obj, engine):
-        base_obj.metadata.drop_all(engine)
+
+class TestRegistration:
 
     def test_register_users(self, register_data):
         # Setup
@@ -16,14 +16,10 @@ class TestRegistration:
         # Verify
         assert in_db_names == desired
         # Cleanup
-        TestRegistration.cleanup(base_created, engine)
+        cleanup(base_created, engine)
 
 
 class TestLogin:
-
-    @staticmethod
-    def cleanup(base_obj, engine):
-        base_obj.metadata.drop_all(engine)
 
     def test_login_user(self, login_data):
         # Setup
@@ -37,4 +33,4 @@ class TestLogin:
         # Verify
         assert user_name == desired
         # Cleanup
-        TestLogin.cleanup(base_created, engine)
+        cleanup(base_created, engine)

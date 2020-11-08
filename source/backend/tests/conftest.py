@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -16,13 +18,14 @@ def build_test_db():
     return user_handler_instance, Base, engine, test_session_obj
 
 
-params_reg = [('./data_test/test_user_1.json', ['Guard1']), ('./data_test/test_user_2.json', ['Guard1', 'Guard2']),
-              ('./data_test/test_user_3.json', ['Guard1', 'Guard2', 'Guard3'])]
+params_reg = [('test_user_1.json', ['Guard1']), ('test_user_2.json', ['Guard1', 'Guard2']),
+              ('test_user_3.json', ['Guard1', 'Guard2', 'Guard3'])]
 
 
 @pytest.fixture(scope='module', params=params_reg)
 def register_data(request):
     json_path, desired_output = request.param
+    json_path = os.path.join(os.getcwd(), 'data_test', json_path)
     user_handler_instance, Base_created, engine, test_session_obj = build_test_db()
     return user_handler_instance, Base_created, engine, test_session_obj, desired_output, json_path
 
