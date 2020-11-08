@@ -15,5 +15,5 @@ Base.metadata.create_all(engine)
 user_handler_instance = UserHandler(Session)
 # As it is available only for the selected guards, random users can not register
 # During the database setup the user registration should be handled
-user_handler_instance.register_users('users.json')
+user_handler_instance.register_users_unique('users.json')
 user_handler_instance.release_resources()

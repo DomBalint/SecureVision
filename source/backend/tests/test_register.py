@@ -11,7 +11,7 @@ class TestRegistration:
         # Setup
         user_handler_instance, base_created, engine, session_obj, desired, json_path = register_data
         # Exercise
-        user_handler_instance.register_users(json_path)
+        user_handler_instance.register_users_unique(json_path)
         in_db_names = [user.name for user in session_obj.query(User).order_by(User.id)]
         # Verify
         assert in_db_names == desired
@@ -25,7 +25,7 @@ class TestLogin:
     def cleanup(base_obj, engine):
         base_obj.metadata.drop_all(engine)
 
-    def test_register_users(self, login_data):
+    def test_login_user(self, login_data):
         # Setup
         user_handler_instance, base_created, engine, session_obj, desired, name = login_data
         # Exercise
@@ -37,4 +37,4 @@ class TestLogin:
         # Verify
         assert user_name == desired
         # Cleanup
-        TestRegistration.cleanup(base_created, engine)
+        TestLogin.cleanup(base_created, engine)

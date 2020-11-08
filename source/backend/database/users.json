@@ -3,7 +3,7 @@
     {
       "name": "Guard1",
       "pass": "Guard1pass",
-      "rights": "0"
+      "rights": "1"
     },
     {
       "name": "Guard2",

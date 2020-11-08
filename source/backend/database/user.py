@@ -13,7 +13,7 @@ class User(UniqueMixin, Base):
     __tablename__ = 'user'
     id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
-    user_pass = Column(String(50), nullable=False)
+    user_pass = Column(String(100), nullable=False)
     user_rights = Column(Integer, nullable=False)
     num_feedback = Column(Integer, nullable=True)
 
@@ -45,7 +45,7 @@ class UserHandler:
     def __init__(self, session_maker):
         self.__session = session_maker()
 
-    def register_users(self, json_file_path):
+    def register_users_unique(self, json_file_path):
         with open(json_file_path, 'r') as file:
             data = json.load(file)
             for employee in data['Users']:
@@ -53,6 +53,8 @@ class UserHandler:
                                user_pass=generate_password_hash(employee['pass'], 'sha256'),
                                user_rights=employee['rights'])
         self.__session.commit()
+
+    # TODO: ADD FUNCTION THAT REGISTERS USER WITHOUT UNIQUE CHECK, FASTER
 
     def user_by_name(self, name):
         return self.__session.query(User).filter(User.name == name).one_or_none()

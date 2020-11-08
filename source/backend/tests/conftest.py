@@ -35,5 +35,5 @@ params_login = [('Guard1', 'Guard1'), ('Guard3', 'Guard3'),
 def login_data(request):
     name, desired_output = request.param
     user_handler_instance, Base_created, engine, test_session_obj = build_test_db()
-    user_handler_instance.register_users('./data_test/test_user_4.json')
+    user_handler_instance.register_users_unique('./data_test/test_user_4.json')
     return user_handler_instance, Base_created, engine, test_session_obj, desired_output, name

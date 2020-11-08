@@ -8,11 +8,16 @@ curl http://localhost:5000/user/login -d "password=something&username=name" -X p
 curl http://localhost:5000/cameras
 """
 
+import datetime
+from functools import wraps
+
+import jwt
 from flask import Flask, request, jsonify, make_response
 from flask_restful import Api
-import datetime
-import jwt
-from functools import wraps
+from werkzeug.security import check_password_hash
+
+from SecureVision.source.backend.database.base import Session
+from SecureVision.source.backend.database.user import UserHandler
 
 # TODO: store password hash only and check password against hash
 # e.g. functions to use: from werkzeug.security import generate_hash, check_hash
@@ -27,6 +32,7 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 api = Api(app)
 
+user_handler_instance = UserHandler(Session)
 # Database mocks:
 # TODO: [delete] and replace with database queries in functions, CHECK database/user.py
 mock_users = [
@@ -37,17 +43,11 @@ mock_users = [
 
 
 def query_user(username):
-    for user in mock_users:
-        if user['username'] == username:
-            return user
-    return None
+    return user_handler_instance.user_by_name(username)
 
 
-def query_user_by_id(id):
-    for user in mock_users:
-        if user['id'] == id:
-            return user
-    return None
+def query_user_by_id(user_id):
+    return user_handler_instance.user_by_id(user_id)
 
 
 def promote(id):
@@ -97,8 +97,8 @@ def login():
     if not user:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
-    if user['password'] == auth.password:
-        token = jwt.encode({'id': user['id'], 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+    if check_password_hash(user.user_pass, auth.password):
+        token = jwt.encode({'id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
                            app.config['SECRET_KEY'])
 
         return jsonify({'token': token.decode('UTF-8')})
@@ -111,7 +111,7 @@ def login():
 def promote_user(current_user, user_id):
     """ API function for promoting user to admin. """
 
-    if not current_user['admin']:
+    if not current_user.user_rights:
         return jsonify({'message': 'Cannot perform that action!'})
 
     if not promote(user_id):
