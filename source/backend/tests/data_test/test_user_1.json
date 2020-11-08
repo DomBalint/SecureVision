@@ -1,0 +1,9 @@
+{
+  "Users": [
+    {
+      "name": "Guard1",
+      "pass": "Guard1pass",
+      "rights": "0"
+    }
+  ]
+}

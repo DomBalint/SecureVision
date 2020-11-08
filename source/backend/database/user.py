@@ -44,3 +44,7 @@ def register_users(session, json_file_path):
         for employee in data['Users']:
             User.as_unique(session, name=employee['name'], user_pass=generate_password_hash(employee['pass'], 'sha256'),
                            user_rights=employee['rights'])
+
+
+def login_user(session, name):
+    return session.query(User).filter(User.name == name).one()
