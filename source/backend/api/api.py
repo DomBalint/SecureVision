@@ -19,9 +19,6 @@ from werkzeug.security import check_password_hash
 from SecureVision.source.backend.database.base import Session
 from SecureVision.source.backend.database.user import UserHandler
 
-# TODO: store password hash only and check password against hash
-# e.g. functions to use: from werkzeug.security import generate_hash, check_hash
-
 # DEPRACATED imports
 # from user import User
 # from image import Image, Feedback
@@ -33,13 +30,6 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 api = Api(app)
 
 user_handler_instance = UserHandler(Session)
-# Database mocks:
-# TODO: [delete] and replace with database queries in functions, CHECK database/user.py
-mock_users = [
-    {'username': 'mock_user1', 'password': 'password', 'id': 6546543, 'admin': True},
-    {'username': 'mock_user2', 'password': 'password', 'id': 1325832, 'admin': False},
-    {'username': 'mock_user3', 'password': 'password', 'id': 6666666, 'admin': False},
-]
 
 
 def query_user(username):
@@ -50,17 +40,7 @@ def query_user_by_id(user_id):
     return user_handler_instance.user_by_id(user_id)
 
 
-def promote(id):
-    for i in range(len(mock_users)):
-        if int(mock_users[i]['id']) == int(id):
-            mock_users[i]['admin'] = True
-            return True
-
-    return False
-
-
 # .......................................................#
-
 # Custom decorators
 def token_required(f):
     @wraps(f)
@@ -114,8 +94,6 @@ def promote_user(current_user, user_id):
     if not current_user.user_rights:
         return jsonify({'message': 'Cannot perform that action!'})
 
-    if not promote(user_id):
-        return jsonify({'message': 'No user found!'})
     else:
         return jsonify({'message': 'The user has been promoted.'})
 
