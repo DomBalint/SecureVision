@@ -14,8 +14,35 @@ class Annotation(Base):
     left_y = Column(Float, nullable=False)
     length = Column(Float, nullable=False)
     width = Column(Float, nullable=False)
-    detection_id = Column(Integer, ForeignKey('detection.id'), nullable=False)
-    detection = relationship("Detection", backref="annotation")
+    image_id = Column(Integer, ForeignKey('image.id'), nullable=False)
+    image = relationship("Image", backref="annotation")
 
     def __repr__(self):
         return "<Annotation(id='%s', obj_type='%s')>" % (self.id, self.obj_type)
+
+
+class AnnotationHandler:
+
+    def __init__(self, session_maker):
+        self.__session = session_maker()
+
+    # For an example see the annotations.json
+    def add_annotation(self, data_dict):
+        for annotation in data_dict['Annotations']:
+            annotation_obj = Annotation(obj_type=annotation['obj_type'], left_x=annotation['left_x'],
+                                        left_y=annotation['left_y'], length=annotation['length'],
+                                        width=annotation['width'],
+                                        image_id=annotation['image_id'])
+            self.__session.add(annotation_obj)
+        self.__session.commit()
+
+    def anns_by_img_id(self, img_id):
+        return self.__session.query(Annotation).filter(Annotation.image_id == img_id).all()
+
+    def release_resources(self):
+        if self.__session:
+            self.__session.close()
+
+    def commit(self):
+        if self.__session:
+            self.__session.commit()
