@@ -1,0 +1,3 @@
+mail_server:
+  host: 'example11.securevison.intra.net'
+  port: '28031'

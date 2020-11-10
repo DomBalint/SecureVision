@@ -1,0 +1,5 @@
+sql_alchemy:
+  host: 'example33.securevision.intra.net'
+  port: '27017'
+  user: 'test'
+  password: 'test'
