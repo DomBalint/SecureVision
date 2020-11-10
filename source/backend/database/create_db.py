@@ -1,3 +1,5 @@
+import os
+
 from SecureVision.source.backend.database.base import Session, engine, Base
 from SecureVision.source.backend.database.user import User, UserHandler
 from SecureVision.source.backend.database.camera import Camera
@@ -12,7 +14,7 @@ Base.metadata.create_all(engine)
 user_handler_instance = UserHandler(Session)
 # As it is available only for the selected guards, random users can not register
 # During the database setup the user registration should be handled
-user_handler_instance.register_users_unique('users.json')
+user_handler_instance.register_users_unique(os.path.join(os.getcwd(), 'db_json', "users.json"))
 user_handler_instance.release_resources()
 
 # ORDER OF ADDING THINGS: USERS, CAMERAS, IMAGES, ANNOTATIONS, FEEDBACKS
