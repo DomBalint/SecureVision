@@ -40,6 +40,7 @@ class User(UniqueMixin, Base):
         return "<User(name='%s', user_rights='%d')>" % (self.name, self.user_rights)
 
 
+# TODO: add global session handler and not separate
 class UserHandler:
 
     def __init__(self, session_maker):

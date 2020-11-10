@@ -33,3 +33,29 @@ class Image(UniqueMixin, Base):
 
     def __repr__(self):
         return "<Image(id='%d', img_path='%s')>" % (self.id, self.img_path)
+
+
+# TODO: add global session handler and not separate
+class ImageHandler:
+
+    def __init__(self, session_maker):
+        self.__session = session_maker()
+
+    # TODO: ADD FUNCTION THAT REGISTERS IMG WITHOUT UNIQUE CHECK, FASTER
+    def add_image(self, img_path, camera_id):
+        Image.as_unique(self.__session, img_path=img_path, cam_id=camera_id)
+        self.__session.commit()
+
+    def img_by_path(self, im_path):
+        return self.__session.query(Image).filter(Image.img_path == im_path).one_or_none()
+
+    def img_by_id(self, img_id):
+        return self.__session.query(Image).filter(Image.id == img_id).one_or_none()
+
+    def release_resources(self):
+        if self.__session:
+            self.__session.close()
+
+    def commit(self):
+        if self.__session:
+            self.__session.commit()
