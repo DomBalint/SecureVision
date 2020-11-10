@@ -16,5 +16,5 @@ user_handler_instance = UserHandler(Session)
 # During the database setup the user registration should be handled
 user_handler_instance.register_users_unique(os.path.join(os.getcwd(), 'db_json', "users.json"))
 user_handler_instance.release_resources()
-
+print("DB created.")
 # ORDER OF ADDING THINGS: USERS, CAMERAS, IMAGES, ANNOTATIONS, FEEDBACKS

@@ -1,16 +1,15 @@
 import requests
 from requests.auth import HTTPBasicAuth
 
-BASE = 'http://127.0.0.1:5000/'
+# BASE = 'http://127.0.0.1:5000/'
 
 
-# TODO: SET UP ENVIRONMENT, MOCK OBJECTS
-# CURRENTLY ONLY PASSES IF YOU RUN THE CREATE_DB.PY AND THE API.PY FOR THE PARAMS SEE THE CONFTEST.PY
 class TestLoginApi:
 
-    def test_login_user(self, login_data_api):
+    def test_login_user(self, login_data_api, api_server):
         # Setup
         desired, name, password = login_data_api
+        BASE = api_server
         # Exercise
         response = requests.get(BASE + 'user/login', auth=HTTPBasicAuth(name, password))
 
