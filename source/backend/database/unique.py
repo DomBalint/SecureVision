@@ -27,7 +27,10 @@ def _unique(session, cls, queryfunc, constructor, kw, unique_key='name'):
                 obj = constructor(**kw)
                 session.add(obj)
             else:
-                print(f'The {obj.name} {unique_key} is not unique, try something else!')
+                if unique_key == 'name':
+                    print(f'The {obj.name} {unique_key} is not unique, try something else!')
+                else:
+                    print(f'The {obj.img_path} {unique_key} is not unique, try something else!')
         cache[key] = obj
         return
 

@@ -88,7 +88,10 @@ class UserHandler:
 
         user = self.user_by_name(name)
         if user:
-            user.num_feedback += 1
+            if user.num_feedback:
+                user.num_feedback += 1
+            else:
+                user.num_feedback = 1
             self.commit()
         else:
             print('No such user')
@@ -101,8 +104,10 @@ class UserHandler:
 
         user = self.user_by_id(user_id)
         if user:
-            user.num_feedback += 1
-            self.commit()
+            if user.num_feedback:
+                user.num_feedback += 1
+            else:
+                user.num_feedback = 1
         else:
             print('No such user')
 

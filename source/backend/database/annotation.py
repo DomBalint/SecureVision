@@ -1,3 +1,4 @@
+import json
 from typing import List, Dict
 
 from sqlalchemy import Column, Integer, String, Float
@@ -30,17 +31,38 @@ class AnnotationHandler:
         self.__session = session_maker()
 
     # ADD------------------------------------------------------------
-    def add_annotations(self, annotation_dict: Dict) -> None:
+    def add_annotations_from_dict(self, annotation_dict: Dict) -> None:
         """
         Adds the annotations the db, from a given dictionary. For an example see the annotations.json
-        :param annotation_dict:
+        :param annotation_dict: a dictionary which contains the annotations
         """
         for annotation in annotation_dict['Annotations']:
-            annotation_obj = Annotation(obj_type=annotation['obj_type'], left_x=annotation['left_x'],
-                                        left_y=annotation['left_y'], length=annotation['length'],
+            annotation_obj = Annotation(obj_type=annotation['obj_type'],
+                                        obj_confidence=annotation['obj_confidence'],
+                                        left_x=annotation['left_x'],
+                                        left_y=annotation['left_y'],
+                                        length=annotation['length'],
                                         width=annotation['width'],
                                         image_id=annotation['image_id'])
             self.__session.add(annotation_obj)
+        self.commit()
+
+    def add_annotations_from_path(self, json_file_path: str) -> None:
+        """
+        Adds the annotations the db, from a given dictionary. For an example see the annotations.json
+        :param json_file_path: path to the json file
+        """
+        with open(json_file_path, 'r') as file:
+            annotation_dict = json.load(file)
+            for annotation in annotation_dict['Annotations']:
+                annotation_obj = Annotation(obj_type=annotation['obj_type'],
+                                            obj_confidence=annotation['obj_confidence'],
+                                            left_x=annotation['left_x'],
+                                            left_y=annotation['left_y'],
+                                            length=annotation['length'],
+                                            width=annotation['width'],
+                                            image_id=annotation['image_id'])
+                self.__session.add(annotation_obj)
         self.commit()
 
     # UPDATE------------------------------------------------------------
