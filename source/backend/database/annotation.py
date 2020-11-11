@@ -1,8 +1,10 @@
+from typing import List, Dict
+
 from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy import ForeignKey
 from sqlalchemy import Sequence
 from sqlalchemy.orm import relationship
-from typing import List, Dict, Optional
+
 from SecureVision.source.backend.database.base import Base
 
 
@@ -42,7 +44,7 @@ class AnnotationHandler:
         self.commit()
 
     # UPDATE------------------------------------------------------------
-    def update_anns_by_img_id(self, img_id: Integer, annotation_dict_new: Dict) -> None:
+    def update_anns_by_img_id(self, img_id: int, annotation_dict_new: Dict) -> None:
         """
         Query and update all the annotations to a specific image, the new values are from the new ann dict.
         Not the best solution but in this case there can be multiple things that need to be updated. So first delete
@@ -55,7 +57,7 @@ class AnnotationHandler:
         self.add_annotations(annotation_dict_new)
 
     # QUERY------------------------------------------------------------
-    def anns_by_img_id(self, img_id: Integer) -> List:
+    def anns_by_img_id(self, img_id: int) -> List:
         """
         Query all the annotations that belong to an image
         :param img_id: id of the image the annotations belong to
@@ -63,7 +65,7 @@ class AnnotationHandler:
         """
         return self.__session.query(Annotation).filter(Annotation.image_id == img_id).all()
 
-    def ann_by_id(self, ann_id: Integer) -> Annotation:
+    def ann_by_id(self, ann_id: int) -> Annotation:
         """
         Query one annotation defined by its id
         :param ann_id: id of the annotation
@@ -72,7 +74,7 @@ class AnnotationHandler:
         return self.__session.query(Annotation).filter(Annotation.id == ann_id).one_or_none()
 
     # DELETE------------------------------------------------------------
-    def anns_delete_by_img_id(self, img_id: Integer) -> None:
+    def anns_delete_by_img_id(self, img_id: int) -> None:
         """
         Deletes all annotation objects identified by their img_id
         :param img_id: query argument
@@ -85,7 +87,7 @@ class AnnotationHandler:
         else:
             print('No such image')
 
-    def ann_delete_by_id(self, ann_id: Integer) -> None:
+    def ann_delete_by_id(self, ann_id: int) -> None:
         """
         Deletes an annotation object identified by its id
         :param ann_id: query argument

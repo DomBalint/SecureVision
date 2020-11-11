@@ -18,7 +18,7 @@ class Image(UniqueMixin, Base):
     camera = relationship("Camera", backref="images")
 
     @classmethod
-    def unique_hash(cls, img_path: String) -> String:
+    def unique_hash(cls, img_path: str) -> str:
         """
         Returns attribute
         :param img_path: unique attribute
@@ -65,7 +65,7 @@ class ImageHandler:
 
     # ADD------------------------------------------------------------
     # TODO: ADD FUNCTION THAT REGISTERS IMG WITHOUT UNIQUE CHECK, FASTER
-    def add_image(self, img_path: String, camera_id: Integer) -> None:
+    def add_image(self, img_path: str, camera_id: int) -> None:
         """
         Adds images as unique with unique paths
         :param img_path: path to the image
@@ -75,7 +75,7 @@ class ImageHandler:
         self.__session.commit()
 
     # UPDATE------------------------------------------------------------
-    def update_image_by_path(self, img_path: String, img_path_new: String, cam_id_new: Integer = -1) -> None:
+    def update_image_by_path(self, img_path: str, img_path_new: str, cam_id_new: int = -1) -> None:
         """
         Updates image queried by its path
         :param img_path: query argument
@@ -91,7 +91,7 @@ class ImageHandler:
         else:
             print('No such image')
 
-    def update_image_by_id(self, img_id: Integer, img_path_new: String, cam_id_new: Integer = -1) -> None:
+    def update_image_by_id(self, img_id: int, img_path_new: str, cam_id_new: int = -1) -> None:
         """
         Updates image queried by its path
         :param img_id: query argument
@@ -108,7 +108,7 @@ class ImageHandler:
             print('No such image')
 
     # QUERY------------------------------------------------------------
-    def img_by_path(self, im_path: String) -> Image:
+    def img_by_path(self, im_path: str) -> Image:
         """
         Queries the images and searches by path
         :param im_path: query argument
@@ -116,7 +116,7 @@ class ImageHandler:
         """
         return self.__session.query(Image).filter(Image.img_path == im_path).one_or_none()
 
-    def img_by_id(self, img_id: Integer) -> Image:
+    def img_by_id(self, img_id: int) -> Image:
         """
         Queries the images and searches by id
         :param img_id: query argument
@@ -125,7 +125,7 @@ class ImageHandler:
         return self.__session.query(Image).filter(Image.id == img_id).one_or_none()
 
     # DELETE------------------------------------------------------------
-    def img_delete_by_path(self, img_path: String) -> None:
+    def img_delete_by_path(self, img_path: str) -> None:
         """
         Deletes an image object identified by its path
         :param img_path: query argument
@@ -137,7 +137,7 @@ class ImageHandler:
         else:
             print('No such image')
 
-    def img_delete_by_id(self, img_id: Integer) -> None:
+    def img_delete_by_id(self, img_id: int) -> None:
         """
         Deletes an image object identified by its id
         :param img_id: query argument

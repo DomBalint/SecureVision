@@ -25,7 +25,7 @@ class FeedbackHandler:
         self.__session = session_maker()
 
     # ADD------------------------------------------------------------
-    def add_fb(self, det_correct: Boolean, img_id: Integer) -> None:
+    def add_fb(self, det_correct: bool, img_id: int) -> None:
         """
         Add a Feedback to the database
         :param det_correct: Boolean value if the detection (all the annotations) are correct or not
@@ -36,7 +36,7 @@ class FeedbackHandler:
         self.commit()
 
     # UPDATE------------------------------------------------------------
-    def update_fb_by_img_id(self, img_id: Integer, new_value: Boolean) -> None:
+    def update_fb_by_img_id(self, img_id: int, new_value: bool) -> None:
         """
         Update the feedback by its img_id (as that is unique)
         :param img_id: query argument
@@ -49,7 +49,7 @@ class FeedbackHandler:
         else:
             print('No such feedback')
 
-    def update_fb_by_fb_id(self, fb_id: Integer, new_value: Boolean) -> None:
+    def update_fb_by_fb_id(self, fb_id: int, new_value: bool) -> None:
         """
         Update the feedback by its id
         :param fb_id: query argument
@@ -63,7 +63,7 @@ class FeedbackHandler:
             print('No such feedback')
 
     # QUERY------------------------------------------------------------
-    def fb_by_img_id(self, img_id: Integer) -> Feedback:
+    def fb_by_img_id(self, img_id: int) -> Feedback:
         """
         Queries the feedbacks and searches by img id (the image it belongs to)
         :param img_id: query argument, image the feedback belongs to
@@ -71,7 +71,7 @@ class FeedbackHandler:
         """
         return self.__session.query(Feedback).filter(Feedback.image_id == img_id).one_or_none()
 
-    def fb_by_id(self, fb_id: Integer) -> Feedback:
+    def fb_by_id(self, fb_id: int) -> Feedback:
         """
        Queries the feedbacks and searches by fb_id
        :param fb_id: query argument
@@ -80,7 +80,7 @@ class FeedbackHandler:
         return self.__session.query(Feedback).filter(Feedback.id == fb_id).one_or_none()
 
     # DELETE------------------------------------------------------------
-    def fb_delete_by_img_id(self, img_id: Integer) -> None:
+    def fb_delete_by_img_id(self, img_id: int) -> None:
         """
         Deletes the feedback that satisfies the query, identified by its img_id
         :param img_id: query argument, image the feedback belongs to
@@ -92,7 +92,7 @@ class FeedbackHandler:
         else:
             print('No such feedback')
 
-    def fb_delete_by_id(self, fb_id: Integer) -> None:
+    def fb_delete_by_id(self, fb_id: int) -> None:
         """
         Deletes the feedback that satisfies the query, identified by its id
         :param fb_id: query argument

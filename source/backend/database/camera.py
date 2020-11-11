@@ -28,7 +28,7 @@ class CameraHandler:
         self.__session.commit()
 
     # UPDATE------------------------------------------------------------
-    def update_start_camera(self, cam_id: Integer) -> None:
+    def update_start_camera(self, cam_id: int) -> None:
         """
         Updates, starts the camera, identified by its id
         :param cam_id: query argument
@@ -40,7 +40,7 @@ class CameraHandler:
         else:
             print('No such camera')
 
-    def update_stop_camera(self, cam_id: Integer) -> None:
+    def update_stop_camera(self, cam_id: int) -> None:
         """
         Updates, stops the camera, identified by its id
         :param cam_id: query argument
@@ -53,7 +53,7 @@ class CameraHandler:
             print('No such camera')
 
     # QUERY------------------------------------------------------------
-    def cam_by_id(self, cam_id: Integer) -> Camera:
+    def cam_by_id(self, cam_id: int) -> Camera:
         """
         Queries the cameras and searches by id
         :param cam_id: query argument
@@ -62,7 +62,7 @@ class CameraHandler:
         return self.__session.query(Camera).filter(Camera.id == cam_id).one_or_none()
 
     # DELETE------------------------------------------------------------
-    def cam_delete(self, cam_id: Integer) -> None:
+    def cam_delete(self, cam_id: int) -> None:
         """
         Deletes a camera object identified by its id
         :param cam_id: query argument

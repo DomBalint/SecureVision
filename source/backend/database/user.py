@@ -19,7 +19,7 @@ class User(UniqueMixin, Base):
     num_feedback = Column(Integer, nullable=True)
 
     @classmethod
-    def unique_hash(cls, name: String) -> String:
+    def unique_hash(cls, name: str) -> str:
         """
         Returns attribute
         :param name: unique attribute
@@ -28,7 +28,7 @@ class User(UniqueMixin, Base):
         return name
 
     @classmethod
-    def unique_filter(cls, query: Query, name: String) -> Query:
+    def unique_filter(cls, query: Query, name: str) -> Query:
         """
         Filters by unique attribute
         :param query: query object
@@ -66,7 +66,7 @@ class UserHandler:
 
     # ADD------------------------------------------------------------
     # TODO: ADD FUNCTION THAT REGISTERS USER WITHOUT UNIQUE CHECK, FASTER
-    def register_users_unique(self, json_file_path: String) -> None:
+    def register_users_unique(self, json_file_path: str) -> None:
         """
         Registers the user from the json file, for example see create_db and db_json/users.json
         :param json_file_path: path to the json file
@@ -80,7 +80,7 @@ class UserHandler:
         self.commit()
 
     # UPDATE------------------------------------------------------------
-    def user_fb_update_by_name(self, name: String) -> None:
+    def user_fb_update_by_name(self, name: str) -> None:
         """
         Increment the feedback value of a user identified by its name
         :param name: name of the user
@@ -93,7 +93,7 @@ class UserHandler:
         else:
             print('No such user')
 
-    def user_fb_update_by_id(self, user_id: Integer) -> None:
+    def user_fb_update_by_id(self, user_id: int) -> None:
         """
         Increment the feedback value of a user identified by its id
         :param user_id: id of the user
@@ -107,7 +107,7 @@ class UserHandler:
             print('No such user')
 
     # QUERY------------------------------------------------------------
-    def user_by_name(self, name: String) -> User:
+    def user_by_name(self, name: str) -> User:
         """
         Query user by name
         :param name: name of the user
@@ -115,7 +115,7 @@ class UserHandler:
         """
         return self.__session.query(User).filter(User.name == name).one_or_none()
 
-    def user_by_id(self, user_id: Integer) -> User:
+    def user_by_id(self, user_id: int) -> User:
         """
         Query user by id
         :param user_id: id of the user
