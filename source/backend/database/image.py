@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy import ForeignKey
 from sqlalchemy import Sequence
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.query import Query
 
 from SecureVision.source.backend.database.base import Base
 from SecureVision.source.backend.database.unique import UniqueMixin
@@ -17,7 +18,7 @@ class Image(UniqueMixin, Base):
     camera = relationship("Camera", backref="images")
 
     @classmethod
-    def unique_hash(cls, img_path):
+    def unique_hash(cls, img_path: String) -> String:
         """
         Returns attribute
         :param img_path: unique attribute
@@ -26,7 +27,7 @@ class Image(UniqueMixin, Base):
         return img_path
 
     @classmethod
-    def unique_filter(cls, query, img_path):
+    def unique_filter(cls, query: Query, img_path: str) -> Query:
         """
         Filters by unique attribute
         :param query: query object
@@ -64,7 +65,7 @@ class ImageHandler:
 
     # ADD------------------------------------------------------------
     # TODO: ADD FUNCTION THAT REGISTERS IMG WITHOUT UNIQUE CHECK, FASTER
-    def add_image(self, img_path, camera_id):
+    def add_image(self, img_path: String, camera_id: Integer) -> None:
         """
         Adds images as unique with unique paths
         :param img_path: path to the image
@@ -74,7 +75,7 @@ class ImageHandler:
         self.__session.commit()
 
     # UPDATE------------------------------------------------------------
-    def update_image_by_path(self, img_path, img_path_new, cam_id_new='Default'):
+    def update_image_by_path(self, img_path: String, img_path_new: String, cam_id_new: Integer = -1) -> None:
         """
         Updates image queried by its path
         :param img_path: query argument
@@ -84,13 +85,13 @@ class ImageHandler:
         img = self.img_by_path(img_path)
         if img:
             img.img_path = img_path_new
-            if cam_id_new != 'Default':
+            if cam_id_new != -1:
                 img.cam_id = cam_id_new
             self.commit()
         else:
             print('No such image')
 
-    def update_image_by_id(self, img_id, img_path_new, cam_id_new='Default'):
+    def update_image_by_id(self, img_id: Integer, img_path_new: String, cam_id_new: Integer = -1) -> None:
         """
         Updates image queried by its path
         :param img_id: query argument
@@ -100,14 +101,14 @@ class ImageHandler:
         img = self.img_by_id(img_id)
         if img:
             img.img_path = img_path_new
-            if cam_id_new != 'Default':
+            if cam_id_new != -1:
                 img.cam_id = cam_id_new
             self.commit()
         else:
             print('No such image')
 
     # QUERY------------------------------------------------------------
-    def img_by_path(self, im_path):
+    def img_by_path(self, im_path: String) -> Image:
         """
         Queries the images and searches by path
         :param im_path: query argument
@@ -115,7 +116,7 @@ class ImageHandler:
         """
         return self.__session.query(Image).filter(Image.img_path == im_path).one_or_none()
 
-    def img_by_id(self, img_id):
+    def img_by_id(self, img_id: Integer) -> Image:
         """
         Queries the images and searches by id
         :param img_id: query argument
@@ -124,7 +125,7 @@ class ImageHandler:
         return self.__session.query(Image).filter(Image.id == img_id).one_or_none()
 
     # DELETE------------------------------------------------------------
-    def img_delete_by_path(self, img_path):
+    def img_delete_by_path(self, img_path: String) -> None:
         """
         Deletes an image object identified by its path
         :param img_path: query argument
@@ -136,7 +137,7 @@ class ImageHandler:
         else:
             print('No such image')
 
-    def img_delete_by_id(self, img_id):
+    def img_delete_by_id(self, img_id: Integer) -> None:
         """
         Deletes an image object identified by its id
         :param img_id: query argument

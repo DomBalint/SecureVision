@@ -2,6 +2,7 @@ import json
 
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import Sequence
+from sqlalchemy.orm.query import Query
 from werkzeug.security import generate_password_hash
 
 from SecureVision.source.backend.database.base import Base
@@ -18,7 +19,7 @@ class User(UniqueMixin, Base):
     num_feedback = Column(Integer, nullable=True)
 
     @classmethod
-    def unique_hash(cls, name):
+    def unique_hash(cls, name: String) -> String:
         """
         Returns attribute
         :param name: unique attribute
@@ -27,7 +28,7 @@ class User(UniqueMixin, Base):
         return name
 
     @classmethod
-    def unique_filter(cls, query, name):
+    def unique_filter(cls, query: Query, name: String) -> Query:
         """
         Filters by unique attribute
         :param query: query object
@@ -65,7 +66,7 @@ class UserHandler:
 
     # ADD------------------------------------------------------------
     # TODO: ADD FUNCTION THAT REGISTERS USER WITHOUT UNIQUE CHECK, FASTER
-    def register_users_unique(self, json_file_path):
+    def register_users_unique(self, json_file_path: String) -> None:
         """
         Registers the user from the json file, for example see create_db and db_json/users.json
         :param json_file_path: path to the json file
@@ -79,7 +80,7 @@ class UserHandler:
         self.commit()
 
     # UPDATE------------------------------------------------------------
-    def user_feedb_update_by_name(self, name):
+    def user_fb_update_by_name(self, name: String) -> None:
         """
         Increment the feedback value of a user identified by its name
         :param name: name of the user
@@ -92,7 +93,7 @@ class UserHandler:
         else:
             print('No such user')
 
-    def user_fb_update_by_id(self, user_id):
+    def user_fb_update_by_id(self, user_id: Integer) -> None:
         """
         Increment the feedback value of a user identified by its id
         :param user_id: id of the user
@@ -106,7 +107,7 @@ class UserHandler:
             print('No such user')
 
     # QUERY------------------------------------------------------------
-    def user_by_name(self, name):
+    def user_by_name(self, name: String) -> User:
         """
         Query user by name
         :param name: name of the user
@@ -114,7 +115,7 @@ class UserHandler:
         """
         return self.__session.query(User).filter(User.name == name).one_or_none()
 
-    def user_by_id(self, user_id):
+    def user_by_id(self, user_id: Integer) -> User:
         """
         Query user by id
         :param user_id: id of the user
