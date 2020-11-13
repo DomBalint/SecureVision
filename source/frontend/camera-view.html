@@ -8,11 +8,19 @@
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/fonts/material-icons.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400|Roboto:300,400,700">
-    <link rel="stylesheet" href="assets/css/styles.min.css">
+    <link rel="stylesheet" href="assets/css/Features-Boxed.css">
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="assets/css/Login-Form-Dark.css">
+    <link rel="stylesheet" href="assets/css/Map-Clean.css">
+    <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="assets/css/sticky-dark-top-nav.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/Team-Clean.css">
 </head>
 
-<body style="background-color:rgb(6,103,201);;">
+<body style="background-color:rgb(6,103,201);">
     <nav class="navbar navbar-light navbar-expand-md navbar-fixed-top navigation-clean-button" style="color:rgb(0,120,241);">
         <div class="container"><a class="navbar-brand" href="#"><span><img src="assets/img/securevision_icon.png" style="height:50px;">Secure Vision</span> </a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div
@@ -20,7 +28,7 @@
                 <ul class="nav navbar-nav nav-right">
                     <li class="nav-item" role="presentation"><a class="nav-link active" href="index.html" style="color:rgba(67,120,255,0.9);">Multi-camera view</a></li>
                 </ul>
-                <p class="ml-auto navbar-text actions"> <a class="btn btn-light action-button" role="button" href="signup.html" style="color:rgba(218,68,68,0.9);">Logout</a></p>
+                <p class="ml-auto navbar-text actions"> <a class="btn btn-light action-button" role="button" href="signup.html" id="logout" style="color:rgba(218,68,68,0.9);">Logout</a></p>
         </div>
         </div>
     </nav>
@@ -33,12 +41,18 @@
                     <li class="list-group-item"><span>Gun: 60%</span></li>
                     <li class="list-group-item"><span>Knife: 90%</span></li>
                 </ul>
+                <div class="row">
+                    <div class="col"><button class="btn btn-primary btn-block" type="button" id="like" style="color:rgb(255,255,255);margin-top:10px;"><i class="material-icons" style="color:rgb(13,44,208);">thumb_up</i></button></div>
+                    <div class="col"><button class="btn btn-primary btn-block" type="button" id="dislike" style="margin-top:10px;"><i class="material-icons" style="color:rgb(188,45,45);">thumb_down</i></button></div>
+                </div>
             </div>
-            <div class="col-lg-8 d-flex justify-content-center align-items-center align-content-center align-self-center"><img class="img-fluid" src="assets/img/P00161.jpg" alt="detection"></div>
+            <div class="col-lg-8 d-flex justify-content-center align-items-center align-content-center align-self-center"><img class="img-fluid" src="assets/img/P00161.jpg" alt="detection" id="image"></div>
         </div>
     </div>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/camera-view.js"></script>
+    <script src="assets/js/script.js"></script>
 </body>
 
 </html>
