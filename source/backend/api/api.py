@@ -15,9 +15,9 @@ import jwt
 from flask import Flask, request, jsonify, make_response
 from flask_restful import Api
 from werkzeug.security import check_password_hash
-
-from SecureVision.source.backend.database.base import Session
-from SecureVision.source.backend.database.user import UserHandler
+from flask_cors import CORS
+from source.backend.database.base import Session
+from source.backend.database.user import UserHandler
 
 # DEPRACATED imports
 # from user import User
@@ -28,15 +28,26 @@ from SecureVision.source.backend.database.user import UserHandler
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 api = Api(app)
+app.config['CORS_ORIGINS'] = '*'
+cors = CORS(app)
 
 user_handler_instance = UserHandler(Session)
 
 
+mock_users = {
+    'Guard1': {'pass': 'pass', 'id': 1, 'name': 'Guard1', 'rights': 1},
+    'Guard2': {'pass': 'pass', 'id': 2, 'name': 'Guard1', 'rights': 0},
+    'Guard3': {'pass': 'pass', 'id': 3, 'name': 'Guard1', 'rights': 0},
+}
+
+
 def query_user(username):
-    return user_handler_instance.user_by_name(username)
+    return mock_users['username']
+    # return user_handler_instance.user_by_name(username)
 
 
 def query_user_by_id(user_id):
+    # return mock_users[0]
     return user_handler_instance.user_by_id(user_id)
 
 
@@ -65,17 +76,17 @@ def token_required(f):
 
 
 # Setup REST API:
-@app.route('/user/login')
+@app.route('/user/login', methods=['GET','POST'])
 def login():
     """ API function for [login], if username/password is correct returns an authorization token. """
     auth = request.authorization
 
     if not auth or not auth.username or not auth.password:
-        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+        return make_response({"message": 'Could not verify'}, 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
     user = query_user(auth.username)
     if not user:
-        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+        return make_response({"message": 'Could not verify'}, 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
     if check_password_hash(user.user_pass, auth.password):
         token = jwt.encode({'id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
@@ -138,4 +149,4 @@ def toggle_camera(current_user):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5000, debug=True)
