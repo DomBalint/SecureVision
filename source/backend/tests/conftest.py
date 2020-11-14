@@ -12,6 +12,7 @@ from SecureVision.source.backend.database.user import User, UserHandler
 from unittest import mock
 from werkzeug.security import generate_password_hash
 
+
 def build_test_db():
     engine = create_engine('sqlite:///:memory:', echo=False)
     Base.metadata.create_all(engine)
@@ -34,19 +35,27 @@ def register_data(request):
     return user_handler_instance, Base_created, engine, test_session_obj, desired_output, json_path
 
 
-params_login = [('Guard1', 'Guard1'), ('Guard3', 'Guard3'),
-                ('GuardNonexistent', 'None')]
+params_login = [('Guard1', 'Guard1', 'Guard1pass'), ('Guard3', 'Guard3', 'Guard3pass'), ('GuardNone', 'None', 'None')]
 
 
 @pytest.fixture(scope='module', params=params_login)
 def login_data(request):
+    name, desired_output, desired_pass = request.param
+    user_handler_instance, Base_created, engine, test_session_obj = build_test_db()
+    user_handler_instance.register_users_unique('./data_test/test_user_4.json')
+    return user_handler_instance, Base_created, engine, test_session_obj, desired_output, name, desired_pass
+
+
+params_fb = [('Guard1', 1)]
+
+
+@pytest.fixture(scope='module', params=params_fb)
+def fb_data(request):
     name, desired_output = request.param
     user_handler_instance, Base_created, engine, test_session_obj = build_test_db()
     user_handler_instance.register_users_unique('./data_test/test_user_4.json')
     return user_handler_instance, Base_created, engine, test_session_obj, desired_output, name
 
-# PART FOR THE API TESTS
-# TODO MOCK DB CONNECTION AND MOCK API AND SERVER CONNECTION
 
 params_login_api = [('Guard10', 'pass', 401), ('Guard1', 'bad_password', 401), ('Guard1', 'Guard1pass', 200)]
 
@@ -57,13 +66,6 @@ def login_data_api(request):
     return desired_output, name, password
 
 
-#def test_db():
-#    rel_path_to_api = '..\\database\\create_db.py'
-#    path_to_api = os.path.join(os.path.abspath(sys.path[0]), rel_path_to_api)
-#    os.system('py' + path_to_api)
-#
-#    return "OK"
-
 @pytest.fixture(scope='module')
 def api_server(xprocess):
     class Starter(ProcessStarter):
@@ -71,7 +73,7 @@ def api_server(xprocess):
         pattern = "* Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)"
 
         # command to start process
-        rel_path_to_api = '..\\api\\api.py'
+        rel_path_to_api = '..\\api\\api_class.py'
         path_to_api = os.path.join(os.path.abspath(sys.path[0]), rel_path_to_api)
 
         args = ['py', path_to_api]
@@ -84,11 +86,11 @@ def api_server(xprocess):
         # optional, defaults to 100 lines
         max_read_lines = 1000
 
-    #db_status = test_db()
+    # db_status = test_db()
     # ensure process is running and return its logfile
     logfile = xprocess.ensure("api_server", Starter)
 
-    conn = 'http://127.0.0.1:5000/' # create a connection or url/port info to the server
+    conn = 'http://127.0.0.1:5000/'  # create a connection or url/port info to the server
     yield conn
 
     # clean up whole process tree afterwards

@@ -128,6 +128,16 @@ class UserHandler:
         """
         return self.__session.query(User).filter(User.id == user_id).one_or_none()
 
+    def user_pass_by_name(self, name: str) -> str:
+        """
+        Returns user password
+        :param name: name of the user
+        :return:
+        """
+        user = self.user_by_name(name)
+        if user:
+            return user.user_pass
+
     # RESOURCES------------------------------------------------------------
     def release_resources(self):
         """

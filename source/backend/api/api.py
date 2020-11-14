@@ -42,8 +42,8 @@ mock_users = {
 
 
 def query_user(username):
-    return mock_users['username']
-    # return user_handler_instance.user_by_name(username)
+    # return mock_users['username']
+    return user_handler_instance.user_by_name(username)
 
 
 def query_user_by_id(user_id):
@@ -76,7 +76,7 @@ def token_required(f):
 
 
 # Setup REST API:
-@app.route('/user/login', methods=['GET','POST'])
+@app.route('/user/login', methods=['GET', 'POST'])
 def login():
     """ API function for [login], if username/password is correct returns an authorization token. """
     auth = request.authorization
