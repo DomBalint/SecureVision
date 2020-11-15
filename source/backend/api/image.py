@@ -2,9 +2,16 @@
 Handle the image related REST API
 """
 from flask_restful import reqparse, abort, Resource
+from source.backend.database.camera import CameraHandler
+from source.backend.database.image import ImageHandler
+from source.backend.database.feedback import FeedbackHandler
+from source.backend.database.base import Session
 
 headers = {"Access-Control-Allow-Origin": "*"}
 parser = reqparse.RequestParser()
+camera_handler_instance = CameraHandler(Session)
+img_handler_instance = ImageHandler(Session)
+fb_handler_instance = FeedbackHandler(Session)
 
 # The objects retrieved from the databse should look something like this
 mock_data = {
@@ -22,10 +29,12 @@ parser.add_argument('feedback')
 
 # Check the existence of the camera num and the image id in the database
 def abort_if_camera_or_image_are_not_found(camera_num, image_id=None):
-    if camera_num not in list(mock_data.keys()):
+    cam_instance = camera_handler_instance.cam_by_id(camera_num)
+    if not cam_instance:
         abort(404, message=f"Camera {camera_num} was not found!", headers=headers)
     if image_id is not None:
-        if image_id not in [i['image_id'] for i in mock_data[camera_num]]:
+        # or if image_id not in [image.id for image in camera_handler_instance.imgs_by_cam_id(camera_num)]
+        if image_id not in [image.id for image in cam_instance.images]:
             abort(404, message=f"Image {image_id} was not found!", headers=headers)
 
 
@@ -36,8 +45,9 @@ class Image(Resource):
         args = parser.parse_args()
         camera_num = int(args['camera_num'])
         abort_if_camera_or_image_are_not_found(camera_num)
-        # last_image = get_last_image_from_db()
-        return mock_data[camera_num][-1], 200, headers
+        last_image = img_handler_instance.img_last_by_cam_id(camera_num)
+        last_image = {'image_id': last_image.id, 'url': last_image.img_path}
+        return last_image, 200, headers
 
     def put(self):
         pass
@@ -57,11 +67,11 @@ class Feedback(Resource):
     def put(self):
         args = parser.parse_args()
         feedback = args['feedback']  # convert to appropriate value
+        # TODO: camera is not needed here i think, please check
         camera_num = int(args['camera_num'])
         image_id = int(args['image_id'])
         abort_if_camera_or_image_are_not_found(camera_num, image_id)
-        # success = add_feedback(camera_num, image_id, feedback)
-        success = True
+        success = fb_handler_instance.update_create_fb_by_img_id(img_id=image_id, new_value=bool(feedback))
         if success:
             return {"success": success}, 201, headers
 

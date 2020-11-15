@@ -25,7 +25,7 @@ class FeedbackHandler:
         self.__session = session_maker()
 
     # ADD------------------------------------------------------------
-    def add_fb(self, det_correct: bool, img_id: int) -> None:
+    def add_fb(self, img_id: int, det_correct: bool) -> None:
         """
         Add a Feedback to the database
         :param det_correct: Boolean value if the detection (all the annotations) are correct or not
@@ -35,32 +35,54 @@ class FeedbackHandler:
         self.__session.add(fb)
         self.commit()
 
-    # UPDATE------------------------------------------------------------
-    def update_fb_by_img_id(self, img_id: int, new_value: bool) -> None:
+    def update_create_fb_by_img_id(self, img_id: int, new_value: bool) -> bool:
         """
         Update the feedback by its img_id (as that is unique)
         :param img_id: query argument
         :param new_value: new Boolean value
+        :returns: boolean value if successful or not
         """
         fb = self.fb_by_img_id(img_id)
         if fb:
             fb.correct_detection = new_value
             self.commit()
+            return True
+        else:
+            self.add_fb(img_id=img_id, det_correct=new_value)
+            return True
+
+    # UPDATE------------------------------------------------------------
+    def update_fb_by_img_id(self, img_id: int, new_value: bool) -> bool:
+        """
+        Update the feedback by its img_id (as that is unique)
+        :param img_id: query argument
+        :param new_value: new Boolean value
+        :returns: boolean value if successful or not
+        """
+        fb = self.fb_by_img_id(img_id)
+        if fb:
+            fb.correct_detection = new_value
+            self.commit()
+            return True
         else:
             print('No such feedback')
+            return False
 
-    def update_fb_by_fb_id(self, fb_id: int, new_value: bool) -> None:
+    def update_fb_by_fb_id(self, fb_id: int, new_value: bool) -> bool:
         """
         Update the feedback by its id
         :param fb_id: query argument
         :param new_value: new Boolean value
+        :returns: boolean value if successful or not
         """
         fb = self.fb_by_id(fb_id)
         if fb:
             fb.correct_detection = new_value
             self.commit()
+            return True
         else:
             print('No such feedback')
+            return False
 
     # QUERY------------------------------------------------------------
     def fb_by_img_id(self, img_id: int) -> Feedback:

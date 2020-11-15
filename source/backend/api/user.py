@@ -47,8 +47,6 @@ class User(Resource):
         args = parser.parse_args()
         username = args['username']
         password = args['password']
-        print(username)
-        print(password)
         user = abort_if_username_or_password_are_incorrect(username, password)
         # return the user as a json object or just the id
         return {'id': user.id}, 200, headers

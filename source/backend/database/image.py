@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import ForeignKey
 from sqlalchemy import Sequence
@@ -123,6 +125,22 @@ class ImageHandler:
         :return: Image object from the database that satisfies the query
         """
         return self.__session.query(Image).filter(Image.id == img_id).one_or_none()
+
+    def imgs_by_cam_id(self, cam_id: int) -> List:
+        """
+        Queries the images and searches by cam_id
+        :param cam_id: query argument, all images that belong to that specific camera
+        :return: List of Image objects from the database that satisfies the query
+        """
+        return self.__session.query(Image).filter(Image.cam_id == cam_id).all()
+
+    def img_last_by_cam_id(self, cam_id: int) -> Image:
+        """
+        Queries the images and searches by cam_id
+        :param cam_id: query argument, all images that belong to that specific camera
+        :return: List of Image objects from the database that satisfies the query
+        """
+        return self.__session.query(Image).filter(Image.cam_id == cam_id).order_by(Image.id.desc()).first()
 
     # DELETE------------------------------------------------------------
     def img_delete_by_path(self, img_path: str) -> None:
