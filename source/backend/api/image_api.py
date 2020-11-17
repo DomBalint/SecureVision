@@ -2,16 +2,13 @@
 Handle the image related REST API
 """
 from flask_restful import reqparse, abort, Resource
-from source.backend.database.camera import CameraHandler
-from source.backend.database.image import ImageHandler
-from source.backend.database.feedback import FeedbackHandler
-from source.backend.database.base import Session
+from containers import Handlers
 
 headers = {"Access-Control-Allow-Origin": "*"}
 parser = reqparse.RequestParser()
-camera_handler_instance = CameraHandler(Session)
-img_handler_instance = ImageHandler(Session)
-fb_handler_instance = FeedbackHandler(Session)
+camera_handler_instance = Handlers.cam_handler()
+img_handler_instance = Handlers.img_handler()
+fb_handler_instance = Handlers.fb_handler()
 
 # The objects retrieved from the databse should look something like this
 mock_data = {
@@ -38,7 +35,7 @@ def abort_if_camera_or_image_are_not_found(camera_num, image_id=None):
             abort(404, message=f"Image {image_id} was not found!", headers=headers)
 
 
-class Image(Resource):
+class ImageApi(Resource):
 
     # Return the last image taken by the chosen camera with it's id
     def post(self):
@@ -59,7 +56,7 @@ class Image(Resource):
         pass
 
 
-class Feedback(Resource):
+class FeedbackApi(Resource):
     def post(self):
        pass
 

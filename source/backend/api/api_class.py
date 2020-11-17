@@ -8,21 +8,13 @@ curl http://localhost:5000/user/login -d "password=something&username=name" -X p
 curl http://localhost:5000/cameras
 """
 
-import datetime
-from functools import wraps
-
-import jwt
-from flask import Flask, request, jsonify, make_response
-from flask_restful import Api
-from werkzeug.security import check_password_hash
+from flask import Flask
 from flask_cors import CORS
-from source.backend.database.base import Session
-from source.backend.database.user import UserHandler
+from flask_restful import Api
 
-# DEPRACATED imports
-from source.backend.api.user import User
-from source.backend.api.image import Image, Feedback
-from source.backend.api.camera import Camera
+from source.backend.api.camera_api import CameraApi
+from source.backend.api.image_api import ImageApi, FeedbackApi
+from source.backend.api.user_api import UserApi
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -30,10 +22,10 @@ api = Api(app)
 app.config['CORS_ORIGINS'] = '*'
 cors = CORS(app)
 
-api.add_resource(User, '/user/login')
-api.add_resource(Image, '/image')
-api.add_resource(Feedback, '/image/feedback')
-api.add_resource(Camera, '/cameras')
+api.add_resource(UserApi, '/user/login')
+api.add_resource(ImageApi, '/image')
+api.add_resource(FeedbackApi, '/image/feedback')
+api.add_resource(CameraApi, '/cameras')
 
 
 if __name__ == '__main__':

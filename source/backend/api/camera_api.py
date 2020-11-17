@@ -2,15 +2,14 @@
 Handle the camera related REST API
 """
 from flask_restful import reqparse, abort, Resource
-from source.backend.database.camera import CameraHandler
-from source.backend.database.base import Session
+from containers import Handlers
 
 # Required headers
 headers = {"Access-Control-Allow-Origin": "*"}
 parser = reqparse.RequestParser()
 
 # The objects retrieved from the databse should look something like this
-camera_handler_instance = CameraHandler(Session)
+camera_handler_instance = Handlers.cam_handler()
 # Add exactly four cameras to the database
 mock_cameras = {
     1: {'image_id': [1, 2, 3, 4]},
@@ -28,7 +27,7 @@ def abort_if_there_are_no_available_cameras():
         abort(404, message=f"There are no available cameras", headers=headers)
 
 
-class Camera(Resource):
+class CameraApi(Resource):
 
     def get(self):
         abort_if_there_are_no_available_cameras()

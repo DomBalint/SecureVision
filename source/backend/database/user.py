@@ -58,14 +58,12 @@ class User(UniqueMixin, Base):
         return "<User(name='%s', user_rights='%d')>" % (self.name, self.user_rights)
 
 
-# TODO: add global session handler and not separate
 class UserHandler:
 
     def __init__(self, session_maker):
         self.__session = session_maker()
 
     # ADD------------------------------------------------------------
-    # TODO: ADD FUNCTION THAT REGISTERS USER WITHOUT UNIQUE CHECK, FASTER
     def register_users_unique(self, json_file_path: str) -> None:
         """
         Registers the user from the json file, for example see create_db and db_json/users.json

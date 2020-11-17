@@ -4,8 +4,7 @@ Handle the user related REST API
 from flask_restful import reqparse, abort, Resource
 from werkzeug.security import check_password_hash
 
-from source.backend.database.user import UserHandler
-from source.backend.database.base import Session
+from containers import Handlers
 
 headers = {"Access-Control-Allow-Origin": "*"}
 parser = reqparse.RequestParser()
@@ -27,7 +26,7 @@ def abort_if_username_or_password_are_incorrect(username, password):
     return user
 
 
-user_handler_instance = UserHandler(Session)
+user_handler_instance = Handlers.user_handler()
 
 
 def query_user(username):
@@ -39,7 +38,7 @@ def query_user_by_id(user_id):
     return user_handler_instance.user_by_id(user_id)
 
 
-class User(Resource):
+class UserApi(Resource):
     def get(self):
         return {'ok': "good job"}, 200, headers
 
