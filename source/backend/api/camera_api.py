@@ -11,12 +11,12 @@ parser = reqparse.RequestParser()
 # The objects retrieved from the databse should look something like this
 camera_handler_instance = Handlers.cam_handler()
 # Add exactly four cameras to the database
-mock_cameras = {
-    1: {'image_id': [1, 2, 3, 4]},
-    2: {'image_id': [1, 2, 3, 4]},
-    3: {'image_id': [1, 2, 3, 4]},
-    4: {'image_id': [1, 2, 3, 4]},
-}
+# mock_cameras = {
+#     1: {'image_id': [1, 2, 3, 4]},
+#     2: {'image_id': [1, 2, 3, 4]},
+#     3: {'image_id': [1, 2, 3, 4]},
+#     4: {'image_id': [1, 2, 3, 4]},
+# }
 
 # Camera id argument
 parser.add_argument('camera_num')

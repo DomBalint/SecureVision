@@ -60,8 +60,8 @@ class User(UniqueMixin, Base):
 
 class UserHandler:
 
-    def __init__(self, session_maker):
-        self.__session = session_maker()
+    def __init__(self, session):
+        self.__session = session
 
     # ADD------------------------------------------------------------
     def register_users_unique(self, json_file_path: str) -> None:

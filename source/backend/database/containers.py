@@ -10,7 +10,6 @@ from base import BaseConnection
 
 
 class AttributeFactory(providers.Provider):
-
     __slots__ = ('_factory',)
 
     def __init__(self, *args, **kwargs):
@@ -47,13 +46,15 @@ class Configs(containers.DeclarativeContainer):
 
 class Databases(containers.DeclarativeContainer):
     base_connection = AttributeFactory(BaseConnection, config=Configs.config)
+    base_session_maker = base_connection.session_maker()
     base_engine = base_connection.engine()
-    base_session = providers.Singleton(sessionmaker, bind=base_engine)
+    # GLOBAL SESSION
+    base_session = base_connection.session()
 
 
 class Handlers(containers.DeclarativeContainer):
-    user_handler = providers.Factory(UserHandler, session_maker=Databases.base_session)
-    cam_handler = providers.Factory(CameraHandler, session_maker=Databases.base_session)
-    img_handler = providers.Factory(ImageHandler, session_maker=Databases.base_session)
-    ann_handler = providers.Factory(AnnotationHandler, session_maker=Databases.base_session)
-    fb_handler = providers.Factory(FeedbackHandler, session_maker=Databases.base_session)
+    user_handler = providers.Factory(UserHandler, session=Databases.base_session_maker())
+    cam_handler = providers.Factory(CameraHandler, session=Databases.base_session_maker())
+    img_handler = providers.Factory(ImageHandler, session=Databases.base_session_maker())
+    ann_handler = providers.Factory(AnnotationHandler, session=Databases.base_session_maker())
+    fb_handler = providers.Factory(FeedbackHandler, session=Databases.base_session_maker())

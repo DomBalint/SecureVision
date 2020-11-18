@@ -18,7 +18,8 @@ class BaseConnection:
                                     echo=False)
         if not self.remote:
             self.event_listen()
-        self.session = sessionmaker()
+        self.session_maker = sessionmaker(bind=self.engine)
+        self.session = self.session_maker()
 
     @staticmethod
     def _fk_pragma_on_connect(dbapi_con, con_record):

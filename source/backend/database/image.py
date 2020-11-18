@@ -62,8 +62,8 @@ class Image(UniqueMixin, Base):
 # TODO: add global session handler and not separate
 class ImageHandler:
 
-    def __init__(self, session_maker):
-        self.__session = session_maker()
+    def __init__(self, session):
+        self.__session = session
 
     # ADD------------------------------------------------------------
     # TODO: ADD FUNCTION THAT REGISTERS IMG WITHOUT UNIQUE CHECK, FASTER

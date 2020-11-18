@@ -11,12 +11,12 @@ img_handler_instance = Handlers.img_handler()
 fb_handler_instance = Handlers.fb_handler()
 
 # The objects retrieved from the databse should look something like this
-mock_data = {
-    1: [{'image_id': 1, "url": ""}, {'image_id': 2, "url": ""}],
-    2: [{'image_id': 1, "url": ""}, {'image_id': 2, "url": ""}],
-    3: [{'image_id': 1, "url": ""}, {'image_id': 2, "url": ""}],
-    4: [{'image_id': 1, "url": ""}, {'image_id': 2, "url": ""}],
-}
+# mock_data = {
+#     1: [{'image_id': 1, "url": ""}, {'image_id': 2, "url": ""}],
+#     2: [{'image_id': 1, "url": ""}, {'image_id': 2, "url": ""}],
+#     3: [{'image_id': 1, "url": ""}, {'image_id': 2, "url": ""}],
+#     4: [{'image_id': 1, "url": ""}, {'image_id': 2, "url": ""}],
+# }
 
 # Login arguments
 parser.add_argument('camera_num')
@@ -58,13 +58,12 @@ class ImageApi(Resource):
 
 class FeedbackApi(Resource):
     def post(self):
-       pass
+        pass
 
     # return true if the feedback was posted successfully
     def put(self):
         args = parser.parse_args()
-        feedback = args['feedback']  # convert to appropriate value
-        # TODO: camera is not needed here i think, please check
+        feedback = int(args['feedback'])  # convert to appropriate value
         camera_num = int(args['camera_num'])
         image_id = int(args['image_id'])
         abort_if_camera_or_image_are_not_found(camera_num, image_id)

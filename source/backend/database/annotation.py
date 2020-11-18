@@ -27,8 +27,8 @@ class Annotation(Base):
 
 class AnnotationHandler:
 
-    def __init__(self, session_maker):
-        self.__session = session_maker()
+    def __init__(self, session):
+        self.__session = session
 
     # ADD------------------------------------------------------------
     def add_annotations_from_dict(self, annotation_dict: Dict) -> None:
@@ -76,7 +76,7 @@ class AnnotationHandler:
         """
         # TODO: Find better solution
         self.anns_delete_by_img_id(img_id)
-        self.add_annotations(annotation_dict_new)
+        self.add_annotations_from_dict(annotation_dict_new)
 
     # QUERY------------------------------------------------------------
     def anns_by_img_id(self, img_id: int) -> List:

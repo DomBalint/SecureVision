@@ -21,8 +21,8 @@ class Feedback(Base):
 
 class FeedbackHandler:
 
-    def __init__(self, session_maker):
-        self.__session = session_maker()
+    def __init__(self, session):
+        self.__session = session
 
     # ADD------------------------------------------------------------
     def add_fb(self, img_id: int, det_correct: bool) -> None:

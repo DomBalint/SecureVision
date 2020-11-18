@@ -17,8 +17,8 @@ class Camera(Base):
 
 class CameraHandler:
 
-    def __init__(self, session_maker):
-        self.__session = session_maker()
+    def __init__(self, session):
+        self.__session = session
 
     # ADD------------------------------------------------------------
     def add_camera(self):
