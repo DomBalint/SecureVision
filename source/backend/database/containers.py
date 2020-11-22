@@ -1,5 +1,4 @@
 from dependency_injector import providers, containers
-from sqlalchemy.orm import sessionmaker
 
 from SecureVision.source.backend.database.annotation import AnnotationHandler
 from SecureVision.source.backend.database.camera import CameraHandler

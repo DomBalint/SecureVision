@@ -1,9 +1,9 @@
 import os
-from sqlite3 import IntegrityError
+
+import pytest
 from werkzeug.security import check_password_hash
 
 from SecureVision.source.backend.database.user import User
-import pytest
 
 
 def cleanup(base_obj, engine):
