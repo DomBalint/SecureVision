@@ -418,7 +418,7 @@ if __name__ == '__main__':
     root_path_neg = '../datasets/SIXRay/Negative'
     path_to_csv = '../datasets/SIXRay/gt_data.csv'
     out_dir = '../datasets/SIXRay/output'
-    saved_images = '../datasets/SIXRay/Generated'
+    saved_to = '../datasets/SIXRay/Generated'
 
     # 1. Crops out the area of interest from the positive images, like guns, knives, etc..
     # cropping(root_path_pos, path_to_csv, out_dir)
