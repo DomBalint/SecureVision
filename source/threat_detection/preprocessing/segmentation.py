@@ -286,6 +286,50 @@ def remove_small_regions(threshold_image_input):
 
     return processed_image
 
+def get_boundaries(img):
+    height = img.height
+    width = img.width
+    top_boundaries = []
+    bottom_boundaries = []
+    left_boundaries = []
+    right_boundaries = []
+    # Top down search
+    for j in range(width):
+        i = 0
+        while(i < height and img.getpixel((j, i)) == (255, 255, 255)):
+            i += 1
+        top_boundaries.append(i)
+    # Bottom up search
+    for j in range(width):
+        i = height - 1
+        while(i >= 0 and img.getpixel((j, i)) == (255, 255, 255)):
+            i -= 1
+        bottom_boundaries.append(i)
+    # Left search
+    for i in range(height):
+        j = 0
+        while(j < width and img.getpixel((j, i)) == (255, 255, 255)):
+            j += 1
+        left_boundaries.append(j)
+    # Right search
+    for i in range(height):
+        j = width - 1
+        while(j >= 0 and img.getpixel((j, i)) == (255, 255, 255)):
+            j -= 1
+        right_boundaries.append(j)
+
+    return top_boundaries, bottom_boundaries, left_boundaries, right_boundaries
+
+
+def check_if_inside(pos_r, pos_c, width, height, top_bounds, bottom_bounds, left_bounds, right_bounds):
+    for j in range(pos_c, pos_c + width):
+        if pos_r < top_bounds[j] or pos_r + height - 1 > bottom_bounds[j]:
+            return False
+    for i in range(pos_r, pos_r + height):
+        if pos_c < left_bounds[i] or pos_c + width - 1 > right_bounds[i]:
+            return False
+
+    return True
 
 def otsu_segmentation(base_dir, object_type, path_to_negatives, saved_images, verbose=False):
     """
@@ -301,13 +345,13 @@ def otsu_segmentation(base_dir, object_type, path_to_negatives, saved_images, ve
     negatives = os.listdir(path_to_negatives)
     counter = 0
     os.makedirs(saved_images, exist_ok=True)
-    # TODO: Find the boundaries of the luggage
     annotation_list = []
     for image in tqdm.tqdm(images, 'Otsu segmentation'):
         if image.endswith('.png') or image.endswith('.jpg'):
             img_path = os.path.join(base_dir, object_type, image)
             rand_path = os.path.join(path_to_negatives, negatives[randint(0, len(negatives))])
-            random_negative = Image.open(rand_path).convert('RGB')
+            random_positive = Image.open(rand_path)
+            random_negative =  random_positive.convert('RGB')
             if random_negative is None:
                 continue
 
@@ -355,12 +399,16 @@ def otsu_segmentation(base_dir, object_type, path_to_negatives, saved_images, ve
                 cv2.imshow("image", clean_threat_object)
                 cv2.waitKey(0)
 
+            top, bottom, left, right = get_boundaries(random_positive)
             try:
                 # Add the threat object in a random position to the negative example
                 neg_r, neg_c = random_negative.shape[:2]
                 threat_r, threat_c = clean_threat_object.shape[:2]
                 a = randint(0, neg_r - threat_r)
                 b = randint(0, neg_c - threat_c)
+                while(not check_if_inside(a, b, threat_r, threat_c, top, bottom, left, right)):
+                    a = randint(0, neg_r - threat_r)
+                    b = randint(0, neg_c - threat_c)
 
                 for i, ii in zip(range(a, a + threat_r), range(threat_r)):
                     for j, jj in zip(range(b, b + threat_c), range(threat_c)):
@@ -429,6 +477,6 @@ if __name__ == '__main__':
     # remove_small(out_dir, 'Gun', (99, 50))
 
     # 3. Runs the segmentation
-    otsu_segmentation(out_dir, 'Gun', root_path_neg, save_to)
+    otsu_segmentation(out_dir, 'Gun', root_path_neg, saved_images)
 
     print("done...")
