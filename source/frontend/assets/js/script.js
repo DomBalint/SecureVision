@@ -20,17 +20,18 @@ element.onclick = function(event) {
 async function Login(data) {
     var status = 0;
     var url="http://localhost:5000/user/login";
+	
     const response = await fetch(url, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
+    method: 'POST', 
+    mode: 'cors', 
     headers: {
       'Content-Type': 'application/json',
-      //'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: 'follow', // manual, *follow, error
-    
-    body: JSON.stringify(data) // body data type must match "Content-Type" header
+    redirect: 'follow', 
+    body: JSON.stringify(data) 
+			
   }).then(function(response) {
+			
 			// Logs for debugging remove later
       console.log(response);
       console.log(response.headers.get('Content-Type'));
@@ -53,8 +54,8 @@ async function Login(data) {
 				window.location = "multi-camera.html";
 			}
 			else{
-				// Add sweetalerts or bootstrap alerts
-				alert("Incorrect credentials!")
+                swal("Error", "Incorrect credentials!", "error")
+				// alert("Incorrect credentials!")
 			}
 }).catch((error) => {
       console.error('Error:', error);
