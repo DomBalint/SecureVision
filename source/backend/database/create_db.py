@@ -1,12 +1,12 @@
 import os
 
-from SecureVision.source.backend.database.base import Base
+from backend.database.base import Base
 from containers import Handlers, Databases
-from SecureVision.source.backend.database.user import User
-from SecureVision.source.backend.database.camera import Camera
-from SecureVision.source.backend.database.image import Image
-from SecureVision.source.backend.database.annotation import Annotation
-from SecureVision.source.backend.database.feedback import Feedback
+from backend.database.user import User
+from backend.database.camera import Camera
+from backend.database.image import Image
+from backend.database.annotation import Annotation
+from backend.database.feedback import Feedback
 # Keep these imports
 
 

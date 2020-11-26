@@ -1,11 +1,11 @@
 from dependency_injector import providers, containers
 
-from SecureVision.source.backend.database.annotation import AnnotationHandler
-from SecureVision.source.backend.database.camera import CameraHandler
-from SecureVision.source.backend.database.feedback import FeedbackHandler
-from SecureVision.source.backend.database.image import ImageHandler
-from SecureVision.source.backend.database.user import UserHandler
-from base import BaseConnection
+from backend.database.annotation import AnnotationHandler
+from backend.database.camera import CameraHandler
+from backend.database.feedback import FeedbackHandler
+from backend.database.image import ImageHandler
+from backend.database.user import UserHandler
+from backend.database.base import BaseConnection
 
 
 class AttributeFactory(providers.Provider):

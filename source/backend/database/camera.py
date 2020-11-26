@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy import Column, Integer, Boolean
 from sqlalchemy import Sequence
 
-from SecureVision.source.backend.database.base import Base
+from backend.database.base import Base
 
 
 class Camera(Base):
