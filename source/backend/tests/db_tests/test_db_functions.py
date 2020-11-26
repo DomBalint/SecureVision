@@ -1,9 +1,9 @@
 import os
-from sqlite3 import IntegrityError
+
+import pytest
 from werkzeug.security import check_password_hash
 
 from SecureVision.source.backend.database.user import User
-import pytest
 
 
 def cleanup(base_obj, engine):
@@ -24,9 +24,12 @@ class TestUserTable:
         user_handler_instance.release_resources()
         cleanup(base_created, engine)
 
-    def test_login_user(self, login_data):
+    @pytest.mark.parametrize('user_data', [('Guard1', 'Guard1', 'Guard1pass'),
+                                           ('Guard3', 'Guard3', 'Guard3pass'),
+                                           ('GuardNone', 'None', 'None')], indirect=['user_data'])
+    def test_login_user(self, user_data):
         # Setup
-        user_handler_instance, base_created, engine, session_obj, desired, name, pass_desired = login_data
+        user_handler_instance, base_created, engine, session_obj, desired, name, pass_desired = user_data
         # Exercise
         user = user_handler_instance.user_by_name(name)
         password = user_handler_instance.user_pass_by_name(name)
@@ -43,9 +46,10 @@ class TestUserTable:
         user_handler_instance.release_resources()
         cleanup(base_created, engine)
 
-    def test_user_fb(self, fb_data):
+    @pytest.mark.parametrize('user_data', [('Guard1', 1, None)], indirect=['user_data'])
+    def test_user_fb(self, user_data):
         # Setup
-        user_handler_instance, base_created, engine, session_obj, desired, name = fb_data
+        user_handler_instance, base_created, engine, session_obj, desired, name, _ = user_data
         # Exercise
         user_handler_instance.user_fb_update_by_name(name)
         user = user_handler_instance.user_by_name(name)
@@ -57,7 +61,6 @@ class TestUserTable:
 
 
 class TestCameraTable:
-    # params_cam_add = [[1, 2], [2], True, False]
 
     @pytest.mark.parametrize('cam_all', [[1, 2, 3]], indirect=['cam_all'])
     def test_add_camera(self, cam_all):
@@ -213,4 +216,3 @@ class TestAnnotationTable:
         ann_handler_instance.release_resources()
         cam_handler_instance.release_resources()
         cleanup(base_created, engine)
-

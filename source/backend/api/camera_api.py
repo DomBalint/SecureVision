@@ -1,11 +1,10 @@
 """
 Handle the camera related REST API
 """
-# TODO: add some exception handling
 
 from flask_restful import reqparse, abort, Resource
-from source.backend.database.containers import Handlers
-from source.backend.api.status import Status
+from backend.api.status import Status
+from backend.database.containers import Handlers
 
 # Required headers
 headers = {"Access-Control-Allow-Origin": "*"}

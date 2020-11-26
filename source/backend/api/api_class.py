@@ -8,13 +8,17 @@ curl http://localhost:5000/user/login -d "password=something&username=name" -X p
 curl http://localhost:5000/cameras
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath('./'))
+
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
 
-from source.backend.api.camera_api import CameraApi
-from source.backend.api.image_api import ImageApi, FeedbackApi
-from source.backend.api.user_api import UserApi
+from backend.api.camera_api import CameraApi
+from backend.api.image_api import ImageApi, FeedbackApi
+from backend.api.user_api import UserApi
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -29,4 +33,5 @@ api.add_resource(CameraApi, '/cameras')
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(port=port, debug=False)
