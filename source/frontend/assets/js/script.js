@@ -7,6 +7,7 @@ document.onload = function onload(){
 		}
 }
 
+
 // Request the user login api
 var element = document.getElementById("login");
 if (element != null)

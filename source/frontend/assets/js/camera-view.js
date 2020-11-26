@@ -3,39 +3,38 @@ const queryString = window.location.search;
 console.log(queryString);
 const urlParams = new URLSearchParams(queryString);
 const camera_id = urlParams.get('id');
-get_data();
 console.log(camera_id);
 
 // Submit the a positive feedback using the like button
 var like = document.getElementById("like");
 like.onclick = function(event) {
-    // var image_id = document.getElementById("image").value; // get the image id
     var data = {camera_num: camera_id, image_id: 1, feedback:1};
     Feedback(data);
 }
 
 var dislike = document.getElementById("dislike");
 dislike.onclick = function(event) {
-		 // var image_id = document.getElementById("image").value; // get the image id
     var data = {camera_num: camera_id, image_id: 1, feedback:0};
     Feedback(data);
 }
 async function get_data() {
+	
 		// Get the latest image posted by required camera
     var data = {camera_num: camera_id};
     var status = 0;
     var url="http://localhost:5000/image";
+	
     const response = await fetch(url, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
+    method: 'POST', 
+    mode: 'cors', 
     headers: {
       'Content-Type': 'application/json',
-      //'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: 'follow', // manual, *follow, error
-    
-    body: JSON.stringify(data) // body data type must match "Content-Type" header
+    body: JSON.stringify(data) 
+			
   }).then(function(response) {
+			
+			// Log some information for debugging
       console.log(response);
       console.log(response.headers.get('Content-Type'));
       console.log(response.headers.get('Date'));
@@ -54,13 +53,16 @@ async function get_data() {
         if (data != null){
 						console.log(data['image_id']);
 						console.log(data['url']);
+						//TODO: modify after the model connection to the database
+						// document.getElementById("myImg").src = data['url'];
+						image_id = data['image_id'];
 						var detections  = data['detections'];
 						if (detections != undefined){
-								console.log(detections[0]['threat']);
-								console.log(detections[0]['confidence']);
-						// loop over the detecions and add them to the list
-						// using injections or something like that
-						// make the bootstrap alert visiable
+							for (var i = 0; i < detections.length; i++){
+									console.log(detections[i]['threat']);
+									console.log(detections[i]['confidence']);
+							}
+							// TODO: inject the detectoins to the list
 						}
         }
 }).catch((error) => {
@@ -72,18 +74,19 @@ async function get_data() {
 async function Feedback(data) {
     var status = 0;
     var url="http://localhost:5000/image/feedback";
+	
     const response = await fetch(url, {
-    method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
+    method: 'PUT', 
+    mode: 'cors', 
     headers: {
       'Content-Type': 'application/json',
-      //'Content-Type': 'application/x-www-form-urlencoded',
     },
-    redirect: 'follow', // manual, *follow, error
-    
-    body: JSON.stringify(data) // body data type must match "Content-Type" header
+    redirect: 'follow', 
+    body: JSON.stringify(data)
+			
   }).then(function(response) {
-		// Logs are for debugging
+			
+		// Log some information for debugging
       console.log(response);
       console.log(response.headers.get('Content-Type'));
       console.log(response.headers.get('Date'));
@@ -92,7 +95,7 @@ async function Feedback(data) {
       console.log(response.type);
       console.log(response.url);
 			
-      if (response.status === 201){
+      if (response.status === 200){
           return response.json();
       }
         else{
@@ -101,11 +104,22 @@ async function Feedback(data) {
       
 }).then(function(data){
         if (data != null){
-			alert("Feedback submitted successfully!")
+            swal("Feedback submitted successfully!");
+            // alert("Feedback submitted successfully!");
          	console.log(data);
 			}
-        
+
 }).catch((error) => {
       console.error('Error:', error);
 });
 }
+
+
+
+
+
+
+
+
+// get_data();
+setInterval(get_data, 2000);
