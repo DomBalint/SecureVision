@@ -7,7 +7,7 @@ import numpy as np
 # Timing utility
 from timeit import default_timer as timer
 
-from utils.config_parser import parse_args, parse_yaml
+from utils.utilities import parse_args, parse_yaml, make_dir
 import data_loader as dl
 from transformations import transforms as trfs
 from models.model_zoo import get_model
@@ -191,8 +191,8 @@ def get_empty_scores_dict(data_loader):
 def train_random_holdout(config: dict):
     """"""
     cwd = os.getcwd()
-    ph = os.path.join(cwd, *config['path_history'])
     en = config['experiment_name']
+    ph = os.path.join(cwd, *config['path_history'], en)
     psm = os.path.join(cwd, *config['path_save_model'], en + '.pth')
     config_dataloader = config['dataloader']
     config_train = config['train']
@@ -208,6 +208,7 @@ def train_random_holdout(config: dict):
         'batch_size': batch_size
     }
 
+    make_dir(ph)
     writer = SummaryWriter(ph, comment=en)
     #writer.add_hparams(hparams)
     train_df, valid_df = dl.get_train_valid_df(path_df, valid_size=0.2)
@@ -225,6 +226,8 @@ def train_random_holdout(config: dict):
     df_history, df_scores_train, df_scores_valid = train_model(
         train_data_loader, valid_data_loader, model, optimizer,
         num_epochs, psm, writer, lr_scheduler)
+
+    df_history.iloc[0].to_dict()
 
     df_history.to_csv(os.path.join(ph, en + '_history.csv'), index=False)
     df_scores_train.to_csv(
