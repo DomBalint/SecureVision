@@ -157,7 +157,7 @@ def get_train_valid_data_loaders(
 
 def get_train_valid_df(
     path_df: str,
-    valid_size: float = 0.2
+    valid_size: float = 0.1
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     """
