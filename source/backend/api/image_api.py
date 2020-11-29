@@ -2,9 +2,11 @@
 Handle the image related REST API
 """
 from flask_restful import reqparse, abort, Resource
-from containers import Handlers
+from backend.api.status import Status
+from backend.database.containers import Handlers
 
 headers = {"Access-Control-Allow-Origin": "*"}
+
 parser = reqparse.RequestParser()
 camera_handler_instance = Handlers.cam_handler()
 img_handler_instance = Handlers.img_handler()
@@ -24,27 +26,37 @@ parser.add_argument('image_id')
 parser.add_argument('feedback')
 
 
-# Check the existence of the camera num and the image id in the database
 def abort_if_camera_or_image_are_not_found(camera_num, image_id=None):
+    """
+    Check the existence of the camera num and the image id in the database
+    :param camera_num: the required camera id.
+    :param image_id: *optional the required image id.
+    """
+
     cam_instance = camera_handler_instance.cam_by_id(camera_num)
     if not cam_instance:
-        abort(404, message=f"Camera {camera_num} was not found!", headers=headers)
+        abort(Status.NOT_FOUND, message=f"Camera {camera_num} was not found!", headers=headers)
     if image_id is not None:
-        # or if image_id not in [image.id for image in camera_handler_instance.imgs_by_cam_id(camera_num)]
         if image_id not in [image.id for image in cam_instance.images]:
-            abort(404, message=f"Image {image_id} was not found!", headers=headers)
+            abort(Status.NOT_FOUND, message=f"Image {image_id} was not found!", headers=headers)
 
 
 class ImageApi(Resource):
+    """
+    Handel requests related to the Images
+    """
 
-    # Return the last image taken by the chosen camera with it's id
     def post(self):
+        """
+        Return the last image taken by the chosen camera with it's id
+        """
+
         args = parser.parse_args()
         camera_num = int(args['camera_num'])
         abort_if_camera_or_image_are_not_found(camera_num)
         last_image = img_handler_instance.img_last_by_cam_id(camera_num)
         last_image = {'image_id': last_image.id, 'url': last_image.img_path}
-        return last_image, 200, headers
+        return last_image, Status.OK, headers
 
     def put(self):
         pass
@@ -57,11 +69,18 @@ class ImageApi(Resource):
 
 
 class FeedbackApi(Resource):
+    """
+        Handel requests related to the Image Feedback
+    """
+
     def post(self):
         pass
 
-    # return true if the feedback was posted successfully
     def put(self):
+        """
+        Add the a new feedback to the database
+        """
+
         args = parser.parse_args()
         feedback = int(args['feedback'])  # convert to appropriate value
         camera_num = int(args['camera_num'])
@@ -69,9 +88,9 @@ class FeedbackApi(Resource):
         abort_if_camera_or_image_are_not_found(camera_num, image_id)
         success = fb_handler_instance.update_create_fb_by_img_id(img_id=image_id, new_value=bool(feedback))
         if success:
-            return {"success": success}, 201, headers
+            return {"success": success}, Status.OK, headers
 
-        return {"success": success}, 400, headers
+        return {"success": success}, Status.BAD_REQUEST, headers
 
     def delete(self):
         pass

@@ -7,6 +7,9 @@ Sample usage
 curl http://localhost:5000/user/login -d "password=something&username=name" -X post -v
 curl http://localhost:5000/cameras
 """
+import sys
+import os
+sys.path.append(os.path.abspath('./'))
 
 import datetime
 from functools import wraps
@@ -16,8 +19,8 @@ from flask import Flask, request, jsonify, make_response
 from flask_restful import Api
 from werkzeug.security import check_password_hash
 from flask_cors import CORS
-from source.backend.database.base import Session
-from source.backend.database.user import UserHandler
+from backend.database.base import Session
+from backend.database.user import UserHandler
 
 # DEPRACATED imports
 # from user import User

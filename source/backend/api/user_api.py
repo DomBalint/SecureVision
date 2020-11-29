@@ -4,7 +4,8 @@ Handle the user related REST API
 from flask_restful import reqparse, abort, Resource
 from werkzeug.security import check_password_hash
 
-from containers import Handlers
+from backend.api.status import Status
+from backend.database.containers import Handlers
 
 headers = {"Access-Control-Allow-Origin": "*"}
 parser = reqparse.RequestParser()
@@ -14,14 +15,19 @@ parser.add_argument('username')
 parser.add_argument('password')
 
 
-# Check the existence of the user and the correctness of the password from the database
 def abort_if_username_or_password_are_incorrect(username, password):
+    """
+    Check the existence of the user and the correctness of the password from the database
+    :param username: username filed in the users table
+    :param password: password filed in the password table
+    :return: user object
+    """
     user = query_user(username)
     if not user:  # user:
-        abort(401, message="Unauthorized access! username or password incorrect",
+        abort(Status.UNAUTHORIZED, message="Unauthorized access! username or password incorrect",
               headers=headers)
     elif not check_password_hash(user.user_pass, password):
-        abort(401, message="Unauthorized access! username or password incorrect",
+        abort(Status.UNAUTHORIZED, message="Unauthorized access! username or password incorrect",
               headers=headers)
     return user
 
@@ -39,16 +45,15 @@ def query_user_by_id(user_id):
 
 
 class UserApi(Resource):
-    def get(self):
-        return {'ok': "good job"}, 200, headers
+    # def get(self):
+    #     return {'ok': "good job"}, Status.OK, headers
 
     def post(self):
         args = parser.parse_args()
         username = args['username']
         password = args['password']
         user = abort_if_username_or_password_are_incorrect(username, password)
-        # return the user as a json object or just the id
-        return {'id': user.id}, 200, headers
+        return {'id': user.id}, Status.OK, headers
 
     # Add new user
     def put(self):
