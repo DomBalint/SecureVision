@@ -36,9 +36,9 @@ class TestCameraApi:
         print('Teardown class')
 
     @pytest.mark.parametrize('camera_api', [(1, 200),
-                                            (1, 400),
-                                            (2, 400),
-                                            (3, 400)], indirect=['camera_api'])
+                                            (1, 204),
+                                            (2, 204),
+                                            (3, 204)], indirect=['camera_api'])
     def test_post_camera(self, camera_api):
         # Setup
         desired, cam_num = camera_api
@@ -55,8 +55,8 @@ class TestFeedbackApi:
 
     @pytest.mark.parametrize('feedback_api', [(1, 10, 10, 404),
                                               (1, 1, 5, 404),
-                                              (1, 1, 4, 201)], indirect=['feedback_api'])
-    def test_post_camera(self, feedback_api):
+                                              (1, 1, 4, 200)], indirect=['feedback_api'])
+    def test_post_feedback(self, feedback_api):
         # Setup
         feedback, camera_num, image_id, desired = feedback_api
         fb_data = {'feedback': feedback, 'camera_num': camera_num, 'image_id': image_id}
