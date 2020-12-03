@@ -36,10 +36,10 @@ class Configs(containers.DeclarativeContainer):
     config.override({
         "remote": True,
         "db_dialect": "postgresql",
-        "db_user": "vmnaxxcjwwqlkc",
-        "db_pwd": "a20d0f30efe4cf8a8acab7d6204e6f0f2652cdaf36dc1a79a636b4f9a317fb88",
-        "db_host": "ec2-54-228-209-117.eu-west-1.compute.amazonaws.com",
-        "db_name": "d45rfoe1nssprp",
+        "db_user": "gixvhnjqlweyta",
+        "db_pwd": "1ee75b62d9b9e840482eadf7d0e11d2a35ea8c226275d21d3073da65c83ad94a",
+        "db_host": "ec2-54-247-79-178.eu-west-1.compute.amazonaws.com",
+        "db_name": "der4mdbrf62is8",
     })
 
 
