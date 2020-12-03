@@ -7,7 +7,6 @@ document.onload = function onload(){
 		}
 }
 
-
 // Request the user login api
 var element = document.getElementById("login");
 if (element != null)
@@ -55,8 +54,8 @@ async function Login(data) {
 				window.location = "multi-camera.html";
 			}
 			else{
-                swal("Error", "Incorrect credentials!", "error")
-				// alert("Incorrect credentials!")
+				// TODO: Add sweetalerts or bootstrap alerts
+				alert("Incorrect credentials!")
 			}
 }).catch((error) => {
       console.error('Error:', error);

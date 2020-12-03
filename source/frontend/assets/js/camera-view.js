@@ -104,11 +104,10 @@ async function Feedback(data) {
       
 }).then(function(data){
         if (data != null){
-            swal("Feedback submitted successfully!");
-            // alert("Feedback submitted successfully!");
+					alert("Feedback submitted successfully!");
          	console.log(data);
 			}
-
+        
 }).catch((error) => {
       console.error('Error:', error);
 });

@@ -68,3 +68,13 @@
   margin-bottom:20px;
 }
 
+.d-flex.justify-content-center.align-items-center {
+  color:rgb(0,0,0);
+  font-family:'Roboto Slab', serif;
+}
+
+.small-image {
+  width:100%;
+  height:350px;
+}
+
