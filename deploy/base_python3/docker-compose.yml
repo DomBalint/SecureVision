@@ -1,0 +1,16 @@
+---
+version: "3"
+
+services:
+
+  base_python3:
+    image: ${SV_REGISTRY}/base_python3:1.0.0
+    hostname: base_python3
+    container_name: sv-base_python3
+    restart: always
+    command: sleep 3000
+    environment:
+      SV_HOME: '/home/svadm'
+    volumes:
+      - ${SV_HOME}/system/:/home/svadm/system/
+      - ${SV_HOME}/deploy/${SV_APP_NAME}/app/:/home/svadm/app/
