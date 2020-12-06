@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ThreatPrediction",
+  "description": "Schema that identifies a threat prediction for a scanned X-ray image.",
+  "version": "1.0.0",
+  "type": "object",
+  "properties": {
+    "version": {
+      "description": "The schema version that identifies threat prediction.",
+      "type": "string",
+      "default": "1.0.0"
+    },
+    "modelName": {
+      "description": "Name of the ML model that made the prediction.",
+      "type": "string",
+      "default": "FasterRCNN"
+    },
+    "imageID": {
+      "description": "ID of the scanned X-ray image.",
+      "type": "string"
+    },
+    "imagePath": {
+      "description": "Path of the scanned X-ray image.",
+      "type": "string"
+    },
+    "predictionTS": {
+      "description": "Timestamp of the creation.",
+      "type": "string",
+      "format": "datetime"
+    },
+    "prediction": {
+      "description": "Is there threat or not.",
+      "type": "boolean"
+    },
+    "numberOfThreats": {
+      "description": "Number of dangerous objects on the image.",
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "modelName",
+    "imageID",
+    "imagePath",
+    "predictionTS",
+    "prediction",
+    "numberOfThreats"
+  ]
+}
