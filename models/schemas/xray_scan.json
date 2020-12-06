@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "XrayScanImage",
+  "description": "Schema that identifies a scanned X-ray image document.",
+  "version": "1.0.0",
+  "type": "object",
+  "properties": {
+    "version": {
+      "description": "The schema version that identifies the X-ray image document.",
+      "type": "string",
+      "default": "1.0.0"
+    },
+    "producerID": {
+      "description": "ID of the producer scanned the image.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "createdTS": {
+      "description": "Timestamp of the creation.",
+      "type": "string",
+      "format": "datetime"
+    },
+    "imageID": {
+      "description": "ID of the scanned X-ray image.",
+      "type": "string"
+    },
+    "imagePath": {
+      "description": "Path of the scanned X-ray image.",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "producerID",
+    "createdTS",
+    "imageID",
+    "imagePath"
+  ]
+}
