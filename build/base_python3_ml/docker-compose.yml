@@ -1,0 +1,11 @@
+---
+version: '3.4'
+services:
+  # 1.0.0 - Initial version of base_python3_ml
+  base_python3_ml:
+    image: ${SV_REGISTRY}/base_python3_ml:1.0.0
+    build:
+      context: .
+      dockerfile: ${SV_HOME}/build/base_python3_ml/Dockerfile
+      args:
+        SV_REGISTRY: ${SV_REGISTRY}
