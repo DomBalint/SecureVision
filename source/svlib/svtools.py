@@ -1,8 +1,5 @@
-import errno
 import inspect
 from pathlib import Path
-import warnings
-import time
 
 
 class SecureVisionTools(object):
@@ -11,6 +8,7 @@ class SecureVisionTools(object):
         self.logger = None
         self.config_reader = None
         self.kafka_helper = None
+        self.kafka_admin = None
         self.scheduler = None
         self.os_env = None
 
@@ -24,45 +22,48 @@ class SecureVisionTools(object):
             return self.logger
         else:
             import logging
+            logging.basicConfig(
+                level=logging.INFO,
+                format='%(asctime)s - %(process)d - %(levelname)s '
+                       '- %(message)s'
+            )
             self.logger = logging.getLogger(logger_name)
             return self.logger
 
     @property
     def conf(self):
         if not self.config_reader:
-            from config_reader import ConfigReader
+            from svlib.config_reader import ConfigReader
             self.config_reader = ConfigReader()
         return self.config_reader
 
     @property
     def kafka(self):
         if not self.kafka_helper:
-            from kafka_helper import KafkaHelper
+            from svlib.kafka_helper import KafkaHelper
             self.kafka_helper = KafkaHelper()
         return self.kafka_helper
 
     @property
+    def admin(self):
+        if not self.kafka_admin:
+            from svlib.kafka_helper import KafkaAdmin
+            self.kafka_admin = KafkaAdmin()
+        return self.kafka_admin
+
+    @property
     def chrono(self):
-        if not self.chronograph:
-            from scheduler import Scheduler
+        if not self.scheduler:
+            from svlib.scheduler import Scheduler
             self.scheduler = Scheduler()
         return self.scheduler
 
     @property
     def env(self):
         if not self.os_env:
-            from os_env_helper import OSEnvHelper
+            from svlib.os_env_helper import OSEnvHelper
             self.os_env = OSEnvHelper()
         return self.os_env
 
 
-if __name__ == '__main__':
-
-    sv = SecureVisionTools()
-
-    env_helper1 = sv.env
-
-    print(env_helper1)
-
-    log = sv.log
-    log.warning("hoh")
+svtools = SecureVisionTools()
