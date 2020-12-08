@@ -1,0 +1,5 @@
+threat_predictor:
+  path_model: saved_models
+  model_name: fasterrcnn_test.pth
+  kafka_input_topic: xray_scans
+  kafka_output_topic: predictions
