@@ -4,14 +4,17 @@ from typing import List
 
 import yaml
 
-from svtools import SecureVisionTools as svt
+from svlib.svtools import svtools as svt
 
 
 class ConfigReader:
 
-    def __init__(self, path_configs: str = 'configs'):
-        config_files = self.list_config_files(os.path.join(
-            os.getcwd(), path_configs))
+    def __init__(self, path_configs: str = None):
+        if path_configs:
+            config_files = self.list_config_files(path_configs)
+        else:
+            config_files = self.list_config_files(os.path.join(
+                os.getcwd(), 'system'))
         conf_ = {}
         for file in config_files:
             conf_.update(self.parse_yaml(file))
