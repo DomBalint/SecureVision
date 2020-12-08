@@ -6,7 +6,7 @@ from apscheduler.triggers.cron import CronTrigger
 from apscheduler.executors.pool import ThreadPoolExecutor
 from typing import Callable
 
-from svtools import SecureVisionTools as svt
+from svlib.svtools import svtools as svt
 
 #place to config
 SV_TIME_ZONE = "Europe/Budapest"
@@ -14,7 +14,11 @@ SV_DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S:.%f%z"
 
 
 class Scheduler(object):
-    def __init__(self, scheduler_type: str, num_workers: int = 1):
+    def __init__(
+        self,
+        scheduler_type: str = 'BlockingScheduler',
+        num_workers: int = 1
+    ) -> None:
         self.scheduler = scheduler_type
         self.countdown_job = None
 
@@ -44,8 +48,6 @@ class Scheduler(object):
         self,
         callback_func: Callable,
         cron_expression: str,
-        misfire_grace_time: int = 2,
-        job_name: str = ""
     ) -> None:
         """
 
@@ -55,14 +57,11 @@ class Scheduler(object):
         :param job_name:
         :return:
         """
-        job_name = job_name if job_name else 'unknown'
         svt.log.info(
-            f'Initialized scheduler job {} with cron expression: '
-            f'{cron_expression}!'
+            "Initialized scheduler job with cron expression: "
+            f"{cron_expression}!"
         )
         ct = CronTrigger(
-            name=job_name,
-            misfire_grace_time=misfire_grace_time,
             **dict(zip(self.date_parts, cron_expression.split()))
         )
         self.scheduler.add_job(callback_func, ct)
@@ -84,12 +83,12 @@ class Scheduler(object):
         pass
 
     @staticmethod
-    def now(self):
+    def now():
         # replace to config read
         return datetime.now(tz.gettz(SV_TIME_ZONE))
 
     @staticmethod
-    def now_as_str(self):
+    def now_as_str():
         # replace to config read
         return datetime.now(tz.gettz(SV_TIME_ZONE)).strftime(
             SV_DATE_TIME_FORMAT
