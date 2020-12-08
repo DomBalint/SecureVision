@@ -36,6 +36,29 @@
       "description": "Number of dangerous objects on the image.",
       "type": "integer",
       "minimum": 0
+    },
+    "outputImagePath": {
+      "description": "Path of the output image with the bounding boxes",
+      "type": "string",
+      "default": ""
+    },
+    "predictedObjects": {
+      "description": "Classes of the objects that were detected by the model.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "uniqueItems": false
+    },
+    "confidenceScores": {
+      "description": "Confidence scores of each predicted objects.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 0,
+      "uniqueItems": false
     }
   },
   "additionalProperties": false,
@@ -46,6 +69,7 @@
     "imagePath",
     "predictionTS",
     "prediction",
-    "numberOfThreats"
+    "numberOfThreats",
+
   ]
 }
