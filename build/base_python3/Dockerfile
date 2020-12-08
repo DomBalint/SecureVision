@@ -19,6 +19,7 @@ RUN \
     pip3 install jsonschema && \
     pip3 install apscheduler && \
     pip3 install requests && \
-    pip3 install confluent-kafka==1.5.0
+    pip3 install confluent-kafka==1.5.0 && \
+    pip3 install python-dateutil
 
 WORKDIR /home/svadm
