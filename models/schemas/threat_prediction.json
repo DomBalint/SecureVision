@@ -51,6 +51,20 @@
       "minItems": 0,
       "uniqueItems": false
     },
+    "boundingBoxes": {
+      "description": "Bounding boxes of the detected objects",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 0,
+        "uniqueItems": false
+      },
+      "minItems": 0,
+      "uniqueItems": false
+    },
     "confidenceScores": {
       "description": "Confidence scores of each predicted objects.",
       "type": "array",
@@ -69,7 +83,6 @@
     "imagePath",
     "predictionTS",
     "prediction",
-    "numberOfThreats",
-
+    "numberOfThreats"
   ]
 }
