@@ -1,5 +1,7 @@
 import os
+from typing import Tuple
 
+import cv2
 import numpy as np
 from PIL import Image
 import torch
@@ -37,6 +39,7 @@ class ThreatPredictor:
             4: 'Pliers',
             5: 'Scissors'
         }
+        self.tp_schema_helper = svt.schema.create_helper('ThreatPrediction')
 
     def load_model(self):
         """"""
@@ -60,13 +63,12 @@ class ThreatPredictor:
 
         return model
 
-    def detect_threat(self, message: dict) -> None:
+    def predict_image(self, path_image: str) -> Tuple:
         """
 
-        :param message:
+        :param path_image:
         :return:
         """
-        path_image = os.path.join(message['imagePath'], message['imageID'])
         log.info(f"Received a scanned X-ray image at path: {path_image}")
 
         image = Image.open(path_image)
@@ -81,7 +83,7 @@ class ThreatPredictor:
         output = self.model(image)
 
         # get all predicted class names
-        pred_classes = set([
+        pred_classes = np.array([
             self.classes[i] for i in output[0]['labels'].cpu().numpy()
         ])
         # get scores and bounding boxes for all predicted objects
@@ -89,15 +91,94 @@ class ThreatPredictor:
         scores = output[0]['scores'].data.cpu().numpy()
 
         detection_threshold = 0.5
-        boxes = boxes[scores >= detection_threshold].astype(np.int32)
-        scores = scores[scores >= detection_threshold]
+        pred_classes = pred_classes[scores >= detection_threshold].tolist()
+        boxes = boxes[scores >= detection_threshold].astype(np.int32).tolist()
+        scores = scores[scores >= detection_threshold].tolist()
 
-        boxes[:, 2] = boxes[:, 2] - boxes[:, 0]
-        boxes[:, 3] = boxes[:, 3] - boxes[:, 1]
+        # boxes[:, 2] = boxes[:, 2] - boxes[:, 0]
+        # boxes[:, 3] = boxes[:, 3] - boxes[:, 1]
+
+        return pred_classes, boxes, scores
+
+    def draw_bounding_boxes(
+        self,
+        path_image: str,
+        boxes: list,
+        output_image_path: str
+    ) -> None:
+        """
+
+        :param path_image:
+        :param boxes:
+        :param output_image_path:
+        :return:
+        """
+        image = cv2.imread(path_image)
+        # boxes[:, 2] = boxes[:, 2] + boxes[:, 0]
+        # boxes[:, 3] = boxes[:, 3] + boxes[:, 1]
+
+        for box in boxes:
+            cv2.rectangle(image, (box[0], box[1]), (box[2], box[3]),
+                          (0, 0, 255), 3)
+
+        cv2.imwrite(output_image_path, image)
+
+    def get_threat_prediction_schema(
+        self,
+        message: dict,
+        predictions: dict
+    ) -> dict:
+        """
+
+        :param message:
+        :param predictions:
+        :return:
+        """
+
+        threat_prediction = {
+            "version": "1.0.0",
+            "modelName": self.model_name.split(".pth")[0],
+            "imageID": message["imageID"],
+            "imagePath": message["imagePath"],
+            "predictionTS": svt.chrono.now_as_str(),
+        }
+        threat_prediction.update(predictions)
+
+        return threat_prediction
+
+    def detect_threat(self, message: dict) -> None:
+        """
+
+        :param message:
+        :return:
+        """
+        path_image = os.path.join(message['imagePath'], message['imageID'])
+
+        pred_classes, boxes, scores = self.predict_image(path_image)
 
         log.info(f"Detected classes: {pred_classes}\n")
         log.info(f"Predicted scores: {scores}\n")
         log.info(f"Predicted bounding boxes: {boxes}\n")
+        # No drawing of bounding boxes on the image if there is no threat
+        if pred_classes:
+            parts = message["imageID"].split('.')
+            oip = os.path.join("predictions", parts[0] + '_bbox.' + parts[1])
+            self.draw_bounding_boxes(path_image, boxes, oip)
+        else:
+            oip = ""
+
+        predictions = {
+            "prediction": True if pred_classes else False,
+            "numberOfThreats": len(pred_classes),
+            "outputImagePath": oip,
+            "predictedObjects": pred_classes,
+            "boundingBoxes": boxes,
+            "confidenceScores": scores
+        }
+        threat_prediction = self.get_threat_prediction_schema(message,
+                                                              predictions)
+        self.tp_schema_helper.validate(threat_prediction)
+        self.kafka_helper.publish(self.kafka_output_topic, threat_prediction)
 
     def get_scanned_images(self) -> None:
         """"""
@@ -106,7 +187,6 @@ class ThreatPredictor:
             topics=[self.kafka_input_topic],
             callback_functions=[self.detect_threat]
         )
-
 
 
 if __name__ == '__main__':
