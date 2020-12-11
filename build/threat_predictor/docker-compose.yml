@@ -3,7 +3,7 @@ version: '3.4'
 services:
   # 1.0.0 - Initial version of threat predictor based on machine learning
   threat_predictor:
-    image: ${SV_REGISTRY}/threat_predictor:1.0.0
+    image: ${SV_REGISTRY}/threat_predictor:1.0.1
     build:
       context: ${SV_HOME}/source/components/threat_predictor
       dockerfile: ${SV_HOME}/build/threat_predictor/Dockerfile
