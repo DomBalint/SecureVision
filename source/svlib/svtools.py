@@ -11,6 +11,7 @@ class SecureVisionTools(object):
         self.kafka_admin = None
         self.scheduler = None
         self.os_env = None
+        self.schema_factory = None
 
     @property
     def log(self):
@@ -64,6 +65,13 @@ class SecureVisionTools(object):
             from svlib.os_env_helper import OSEnvHelper
             self.os_env = OSEnvHelper()
         return self.os_env
+
+    @property
+    def schema(self):
+        if not self.schema_factory:
+            from svlib.schema_helper import SchemaHelperFactory
+            self.schema_factory = SchemaHelperFactory()
+        return self.schema_factory
 
 
 svtools = SecureVisionTools()
