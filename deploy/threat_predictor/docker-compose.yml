@@ -4,11 +4,11 @@ version: '3'
 services:
 
   threat_predictor:
-    image: ${SV_REGISTRY}/threat_predictor:1.0.0
+    image: ${SV_REGISTRY}/threat_predictor:1.0.1
     hostname: sv-threat_predictor
     container_name: sv-threat_predictor
     restart: always
-    command: sleep 3000
+    #command: sleep 3000
     environment:
       SV_HOME: '/home/svadm'
     volumes:
@@ -18,3 +18,4 @@ services:
       - ${SV_HOME}/source/threat_detection/datasets/test/:/home/svadm/test/
       - ${SV_HOME}/source/threat_detection/artifacts/saved_models/:/home/svadm/saved_models/
       - ${SV_HOME}/source/components/threat_predictor/configs/:/home/svadm/configs/
+      - ${SV_HOME}source/threat_detection/datasets/predictions/:/home/svadm/predictions
