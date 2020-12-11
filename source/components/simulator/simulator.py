@@ -23,6 +23,7 @@ class XRayProducer:
         self.scheduler = svt.chrono
         self.images = glob.glob(os.path.join(os.getcwd(), path_images, '*jpg'))
         self.kafka_topic = svt.conf.get('kafka', 'producer')['topic']
+        self.schema_helper = svt.schema.create_helper('XRayScan')
 
     def scan_image(self) -> str:
         """Picks a random image.
@@ -56,6 +57,8 @@ class XRayProducer:
         """
         img = self.scan_image()
         xray_scan = self.get_xray_scan_schema(img)
+        # validate the message before publishing
+        self.schema_helper.validate(xray_scan)
         self.kafka_helper.publish(self.kafka_topic, xray_scan)
 
     def run(self) -> None:

@@ -1,4 +1,4 @@
 producer:
   producer_id: 0
   path_images: 'test'
-  cron_expr: '*/5'
+  cron_expr: '*/15'
