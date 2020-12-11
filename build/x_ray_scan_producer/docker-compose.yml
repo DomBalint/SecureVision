@@ -1,0 +1,11 @@
+---
+version: '3.4'
+services:
+  # 1.0.0 - Initial version of x-ray scan simulator
+  x_ray_scan_producer:
+    image: ${SV_REGISTRY}/x_ray_scan_producer:1.0.0
+    build:
+      context: ${SV_HOME}/source/components/simulator
+      dockerfile: ${SV_HOME}/build/x_ray_scan_producer/Dockerfile
+      args:
+        SV_REGISTRY: ${SV_REGISTRY}
