@@ -15,8 +15,8 @@
       "type": "string",
       "default": "FasterRCNN"
     },
-    "producedID": {
-      "description": "ID of the scanned the image.",
+    "producerID": {
+      "description": "ID of the producer scanned the image.",
       "type": "integer",
       "minimum": 0
     },
