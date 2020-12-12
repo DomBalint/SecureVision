@@ -31,7 +31,7 @@ class DatabaseLoader:
         :return:
         """
         path_image = message["outputImagePath"]
-        producer_id = message["producedID"] + 1
+        producer_id = message["producerID"] + 1
         img_id = self.img_handler_instance.add_image(img_path=path_image, camera_id=producer_id)
 
         if message["prediction"]:
