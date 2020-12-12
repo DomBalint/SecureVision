@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy import Column, Integer, Boolean
 from sqlalchemy import Sequence
 
-from base import Base
+from database.base import Base
 
 
 class Camera(Base):

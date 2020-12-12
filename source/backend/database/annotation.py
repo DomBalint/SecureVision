@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Sequence
 from sqlalchemy.orm import relationship
 
-from base import Base
+from database.base import Base
 
 
 class Annotation(Base):

@@ -1,11 +1,11 @@
 from dependency_injector import providers, containers
 
-from annotation import AnnotationHandler
-from camera import CameraHandler
-from feedback import FeedbackHandler
-from image import ImageHandler
-from user import UserHandler
-from base import BaseConnection
+from database.annotation import AnnotationHandler
+from database.camera import CameraHandler
+from database.feedback import FeedbackHandler
+from database.image import ImageHandler
+from database.user import UserHandler
+from database.base import BaseConnection
 
 
 class AttributeFactory(providers.Provider):

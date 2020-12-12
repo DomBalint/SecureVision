@@ -4,7 +4,7 @@ from sqlalchemy import Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import backref
 
-from base import Base
+from database.base import Base
 
 
 class Feedback(Base):
