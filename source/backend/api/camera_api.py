@@ -3,8 +3,8 @@ Handle the camera related REST API
 """
 
 from flask_restful import reqparse, abort, Resource
-from backend.api.status import Status
-from backend.database.containers import Handlers
+from api.status import Status
+from database.containers import Handlers
 
 # Required headers
 headers = {"Access-Control-Allow-Origin": "*"}
