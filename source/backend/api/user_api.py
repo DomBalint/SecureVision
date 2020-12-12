@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash
 
 from status import Status
 from containers import Handlers
-
+from flask import render_template
 headers = {"Access-Control-Allow-Origin": "*"}
 parser = reqparse.RequestParser()
 
@@ -45,7 +45,8 @@ def query_user_by_id(user_id):
 
 
 class UserApi(Resource):
-    # def get(self):
+    def get(self):
+        return render_template('../../fontend/login.html')
     #     return {'ok': "good job"}, Status.OK, headers
 
     def post(self):
