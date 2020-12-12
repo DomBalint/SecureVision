@@ -22,7 +22,7 @@ async function get_data() {
 		// Get the latest image posted by required camera
     var data = {camera_num: camera_id};
     var status = 0;
-    var url="http://localhost:5000/image";
+    var url="http://localhost:5555/image";
 	
     const response = await fetch(url, {
     method: 'POST', 
@@ -53,7 +53,7 @@ async function get_data() {
         if (data != null){
 						console.log(data['image_id']);
 						console.log(data['url']);
-						//TODO: modify after the model connection to the database
+						//TODO: modify after the model connection to the database_loader
 						// document.getElementById("myImg").src = data['url'];
 						image_id = data['image_id'];
 						var detections  = data['detections'];
@@ -73,7 +73,7 @@ async function get_data() {
 // Call the Feedback api
 async function Feedback(data) {
     var status = 0;
-    var url="http://localhost:5000/image/feedback";
+    var url="http://localhost:5555/image/feedback";
 	
     const response = await fetch(url, {
     method: 'PUT', 
