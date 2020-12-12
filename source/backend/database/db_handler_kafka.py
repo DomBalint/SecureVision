@@ -59,7 +59,7 @@ if __name__ == '__main__':
     cr = svt.conf
     app_conf = cr.parse_yaml(
         os.path.join(os.getcwd(), 'configs', 'app_config.yaml')
-    )['threat_predictor']
+    )['database_loader']
 
     db = DatabaseLoader(**app_conf)
 
