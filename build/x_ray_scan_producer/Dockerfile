@@ -1,5 +1,5 @@
 ARG SV_REGISTRY
-FROM ${SV_REGISTRY}/base_python3_ml:1.0.0
+FROM ${SV_REGISTRY}/base_python3:1.0.0
 
 WORKDIR /home/svadm/
 
