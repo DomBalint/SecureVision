@@ -1,7 +1,12 @@
-version: "3.8"
+---
+version: '3.4'
 services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
+  # 1.0.0 - Initial version of the backend
+  backend:
+    image: ${SV_REGISTRY}/sv_backend:1.0.0
+    build:
+      context: ${SV_HOME}/source/backend
+      dockerfile: ${SV_HOME}/build/backend/Dockerfile
+      args:
+        SV_REGISTRY: ${SV_REGISTRY}
       
