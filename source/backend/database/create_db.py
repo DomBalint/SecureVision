@@ -1,12 +1,12 @@
 import os
 
-from backend.database.base import Base
+from base import Base
 from containers import Handlers, Databases
-from backend.database.user import User
-from backend.database.camera import Camera
-from backend.database.image import Image
-from backend.database.annotation import Annotation
-from backend.database.feedback import Feedback
+from user import User
+from camera import Camera
+from image import Image
+from annotation import Annotation
+from feedback import Feedback
 
 
 # Keep these imports

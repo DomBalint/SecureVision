@@ -1,6 +1,6 @@
 import os
 
-from backend.database.containers import Handlers
+from containers import Handlers
 from svlib.svtools import svtools as svt
 from create_db import create_db
 
