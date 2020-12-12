@@ -7,9 +7,9 @@ from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
 
-from api.camera_api import CameraApi
-from api.image_api import ImageApi, FeedbackApi
-from api.user_api import UserApi
+from camera_api import CameraApi
+from image_api import ImageApi, FeedbackApi
+from user_api import UserApi
 
 """
 Run the API and setup the routes
@@ -33,5 +33,6 @@ api.add_resource(FeedbackApi, '/image/feedback')
 api.add_resource(CameraApi, '/cameras')
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    
+    port = 5555
     app.run(port=port, debug=False)

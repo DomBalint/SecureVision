@@ -4,8 +4,8 @@ Handle the user related REST API
 from flask_restful import reqparse, abort, Resource
 from werkzeug.security import check_password_hash
 
-from api.status import Status
-from database.containers import Handlers
+from status import Status
+from containers import Handlers
 
 headers = {"Access-Control-Allow-Origin": "*"}
 parser = reqparse.RequestParser()
