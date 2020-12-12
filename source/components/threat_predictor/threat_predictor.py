@@ -94,9 +94,9 @@ class ThreatPredictor:
         pred_classes = pred_classes[scores >= detection_threshold].tolist()
         boxes = boxes[scores >= detection_threshold].astype(np.int32).tolist()
         scores = scores[scores >= detection_threshold].tolist()
-
-        # boxes[:, 2] = boxes[:, 2] - boxes[:, 0]
-        # boxes[:, 3] = boxes[:, 3] - boxes[:, 1]
+        # x, y, w, h
+        boxes[:, 2] = boxes[:, 2] - boxes[:, 0]
+        boxes[:, 3] = boxes[:, 3] - boxes[:, 1]
 
         return pred_classes, boxes, scores
 
@@ -114,8 +114,9 @@ class ThreatPredictor:
         :return:
         """
         image = cv2.imread(path_image)
-        # boxes[:, 2] = boxes[:, 2] + boxes[:, 0]
-        # boxes[:, 3] = boxes[:, 3] + boxes[:, 1]
+        # x1, y1, x2, y2
+        boxes[:, 2] = boxes[:, 2] + boxes[:, 0]
+        boxes[:, 3] = boxes[:, 3] + boxes[:, 1]
 
         for box in boxes:
             cv2.rectangle(image, (box[0], box[1]), (box[2], box[3]),
@@ -134,9 +135,9 @@ class ThreatPredictor:
         :param predictions:
         :return:
         """
-
         threat_prediction = {
             "version": "1.0.0",
+            "producerID": message["producerID"],
             "modelName": self.model_name.split(".pth")[0],
             "imageID": message["imageID"],
             "imagePath": message["imagePath"],
