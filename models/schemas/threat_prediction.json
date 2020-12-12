@@ -15,6 +15,11 @@
       "type": "string",
       "default": "FasterRCNN"
     },
+    "producedID": {
+      "description": "ID of the scanned the image.",
+      "type": "integer",
+      "minimum": 0
+    },
     "imageID": {
       "description": "ID of the scanned X-ray image.",
       "type": "string"
