@@ -3,22 +3,22 @@
     {
       "name": "Guard1",
       "pass": "Guard1pass",
-      "rights": "1"
+      "rights": 1
     },
     {
       "name": "Guard2",
       "pass": "Guard2pass",
-      "rights": "0"
+      "rights": 0
     },
     {
       "name": "Guard3",
       "pass": "Guard3pass",
-      "rights": "0"
+      "rights": 0
     },
     {
       "name": "Guard3",
       "pass": "Guard3pass",
-      "rights": "0"
+      "rights": 0
     }
   ]
 }

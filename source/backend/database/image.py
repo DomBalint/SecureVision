@@ -73,8 +73,9 @@ class ImageHandler:
         :param img_path: path to the image
         :param camera_id: id of the camera it belongs to
         """
-        Image.as_unique(self.__session, img_path=img_path, cam_id=camera_id)
+        img = Image.as_unique(self.__session, img_path=img_path, cam_id=camera_id)
         self.__session.commit()
+        return img.id
 
     # UPDATE------------------------------------------------------------
     def update_image_by_path(self, img_path: str, img_path_new: str, cam_id_new: int = -1) -> None:

@@ -72,9 +72,9 @@ class UserHandler:
         with open(json_file_path, 'r') as file:
             data = json.load(file)
             for employee in data['Users']:
-                User.as_unique(self.__session, name=employee['name'],
-                               user_pass=generate_password_hash(employee['pass'], 'sha256'),
-                               user_rights=employee['rights'])
+                user = User.as_unique(self.__session, name=employee['name'],
+                                      user_pass=generate_password_hash(employee['pass'], 'sha256'),
+                                      user_rights=employee['rights'])
         self.commit()
 
     # UPDATE------------------------------------------------------------

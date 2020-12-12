@@ -65,6 +65,21 @@ class AnnotationHandler:
                 self.__session.add(annotation_obj)
         self.commit()
 
+    def add_annotations_from_manual(self, img_id, obj_type=None, obj_conf=None, left_x=None, left_y=None, length=None,
+                                    width=None) -> None:
+        """
+        Adds the annotations the db, from the given specifications.
+        """
+        annotation_obj = Annotation(obj_type=obj_type,
+                                    obj_confidence=obj_conf,
+                                    left_x=left_x,
+                                    left_y=left_y,
+                                    length=length,
+                                    width=width,
+                                    image_id=img_id)
+        self.__session.add(annotation_obj)
+        self.commit()
+
     # UPDATE------------------------------------------------------------
     def update_anns_by_img_id(self, img_id: int, annotation_dict_new: Dict) -> None:
         """

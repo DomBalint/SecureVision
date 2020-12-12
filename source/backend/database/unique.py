@@ -32,7 +32,7 @@ def _unique(session, cls, queryfunc, constructor, kw, unique_key='name'):
                 else:
                     print(f'The {obj.img_path} {unique_key} is not unique, try something else!')
         cache[key] = obj
-        return
+        return obj
 
 
 class UniqueMixin(object):
