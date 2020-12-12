@@ -6,9 +6,9 @@ from sqlalchemy import Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.query import Query
 
-from database.base import Base
-from database.unique import UniqueMixin
-from database.unique import _unique
+from base import Base
+from unique import UniqueMixin
+from unique import _unique
 
 
 class Image(UniqueMixin, Base):

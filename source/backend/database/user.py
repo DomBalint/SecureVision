@@ -5,9 +5,9 @@ from sqlalchemy import Sequence
 from sqlalchemy.orm.query import Query
 from werkzeug.security import generate_password_hash
 
-from database.base import Base
-from database.unique import UniqueMixin
-from database.unique import _unique
+from base import Base
+from unique import UniqueMixin
+from unique import _unique
 
 
 class User(UniqueMixin, Base):

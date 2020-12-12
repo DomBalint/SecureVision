@@ -1,12 +1,12 @@
 import os
 
-from database.base import Base
-from database.containers import Handlers, Databases
-from database.user import User
-from database.camera import Camera
-from database.image import Image
-from database.annotation import Annotation
-from database.feedback import Feedback
+from base import Base
+from containers import Handlers, Databases
+from user import User
+from camera import Camera
+from image import Image
+from annotation import Annotation
+from feedback import Feedback
 
 
 # Keep these imports
