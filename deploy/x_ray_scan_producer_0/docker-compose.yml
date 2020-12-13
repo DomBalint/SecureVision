@@ -12,8 +12,5 @@ services:
     environment:
       SV_HOME: '/home/svadm'
     volumes:
-      - ${SV_HOME}/system/:/home/svadm/system/
-      - ${SV_HOME}/models/schemas/:/home/svadm/schemas/
-      - ${SV_HOME}/source/svlib/:/home/svadm/svlib/
-      - ${SV_HOME}/source/components/simulator/configs/:/home/svadm/configs/
       - ${SV_HOME}/source/threat_detection/datasets/test/:/home/svadm/test/
+      - ${SV_HOME}/deploy/x_ray_scan_producer_0/configs/:/home/svadm/configs/
