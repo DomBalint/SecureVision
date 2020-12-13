@@ -86,17 +86,17 @@ class ThreatPredictor:
         pred_classes = np.array([
             self.classes[i] for i in output[0]['labels'].cpu().numpy()
         ])
+        detection_threshold = 0.5
         # get scores and bounding boxes for all predicted objects
         boxes = output[0]['boxes'].data.cpu().numpy()
         scores = output[0]['scores'].data.cpu().numpy()
-
-        detection_threshold = 0.5
-        pred_classes = pred_classes[scores >= detection_threshold].tolist()
-        boxes = boxes[scores >= detection_threshold].astype(np.int32).tolist()
-        scores = scores[scores >= detection_threshold].tolist()
         # x, y, w, h
         boxes[:, 2] = boxes[:, 2] - boxes[:, 0]
         boxes[:, 3] = boxes[:, 3] - boxes[:, 1]
+
+        pred_classes = pred_classes[scores >= detection_threshold].tolist()
+        boxes = boxes[scores >= detection_threshold].astype(np.int32).tolist()
+        scores = scores[scores >= detection_threshold].tolist()
 
         return pred_classes, boxes, scores
 
@@ -114,6 +114,8 @@ class ThreatPredictor:
         :return:
         """
         image = cv2.imread(path_image)
+        # convert back to numpy
+        boxes = np.array(boxes)
         # x1, y1, x2, y2
         boxes[:, 2] = boxes[:, 2] + boxes[:, 0]
         boxes[:, 3] = boxes[:, 3] + boxes[:, 1]
