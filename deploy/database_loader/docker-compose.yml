@@ -1,0 +1,15 @@
+---
+version: '3'
+
+services:
+
+  sv_database_loader:
+    image: ${SV_REGISTRY}/sv_database_loader:1.0.0
+    hostname: sv-database_loader
+    container_name: sv-database_loader
+    restart: always
+    #command: sleep 3000
+    environment:
+      SV_HOME: '/home/svadm'
+    env_file:
+      - ./app.env
