@@ -1,0 +1,4 @@
+producer:
+  producer_id: 1
+  path_images: 'test'
+  cron_expr: '30 *'

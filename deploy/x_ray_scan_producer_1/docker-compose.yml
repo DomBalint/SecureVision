@@ -1,0 +1,16 @@
+---
+version: '3'
+
+services:
+
+  x_ray_scan_producer:
+    image: ${SV_REGISTRY}/x_ray_scan_producer:1.0.0
+    hostname: sv-x_ray_scan_producer_1
+    container_name: sv-x_ray_scan_producer_1
+    restart: always
+    #command: sleep 3000
+    environment:
+      SV_HOME: '/home/svadm'
+    volumes:
+      - ${SV_HOME}/source/threat_detection/datasets/test/:/home/svadm/test/
+      - ${SV_HOME}/deploy/x_ray_scan_producer_1/configs/:/home/svadm/configs/
