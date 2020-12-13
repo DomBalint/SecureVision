@@ -2,10 +2,10 @@
 version: '3.4'
 services:
   # 1.0.0 - Initial version of secure vision database loader
-  sv_database_loader:
+  database_loader:
     image: ${SV_REGISTRY}/sv_database_loader:1.0.0
     build:
-      context: ${SV_HOME}/source/backend/database
-      dockerfile: ${SV_HOME}/build/database/Dockerfile
+      context: ${SV_HOME}/
+      dockerfile: ${SV_HOME}/build/database_loader/Dockerfile
       args:
         SV_REGISTRY: ${SV_REGISTRY}
