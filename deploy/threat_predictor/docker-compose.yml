@@ -12,10 +12,5 @@ services:
     environment:
       SV_HOME: '/home/svadm'
     volumes:
-      - ${SV_HOME}/system/:/home/svadm/system/
-      - ${SV_HOME}/models/schemas/:/home/svadm/schemas/
-      - ${SV_HOME}/source/svlib/:/home/svadm/svlib/
       - ${SV_HOME}/source/threat_detection/datasets/test/:/home/svadm/test/
-      - ${SV_HOME}/source/threat_detection/artifacts/saved_models/:/home/svadm/saved_models/
-      - ${SV_HOME}/source/components/threat_predictor/configs/:/home/svadm/configs/
       - ${SV_HOME}source/threat_detection/datasets/predictions/:/home/svadm/predictions
