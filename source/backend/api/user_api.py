@@ -3,10 +3,11 @@ Handle the user related REST API
 """
 from flask_restful import reqparse, abort, Resource
 from werkzeug.security import check_password_hash
+from flask import render_template, make_response
 
 from status import Status
-from containers import Handlers
-from flask import render_template
+from database.containers import Handlers
+
 headers = {"Access-Control-Allow-Origin": "*"}
 parser = reqparse.RequestParser()
 
@@ -45,8 +46,10 @@ def query_user_by_id(user_id):
 
 
 class UserApi(Resource):
+
     def get(self):
-        return render_template('../../fontend/login.html')
+        headers = {'Content-Type': 'text/html'}
+        return make_response(render_template('login.html'), 200, headers)
     #     return {'ok': "good job"}, Status.OK, headers
 
     def post(self):

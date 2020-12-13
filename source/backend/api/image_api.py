@@ -3,7 +3,7 @@ Handle the image related REST API
 """
 from flask_restful import reqparse, abort, Resource
 from status import Status
-from containers import Handlers
+from database.containers import Handlers
 
 headers = {"Access-Control-Allow-Origin": "*"}
 
