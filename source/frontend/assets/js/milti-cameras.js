@@ -1,7 +1,7 @@
 async function get_cameras() {
 	
     var status = 0;
-    var url="http://localhost:5555/cameras";
+    var url="http://localhost:8432/cameras";
     const response = await fetch(url, {
     method: 'GET', 
     mode: 'cors', 
@@ -43,7 +43,7 @@ async function get_image(camera_id) {
 		// Get the latest image posted by required camera
     var data = {camera_num: camera_id};
     var status = 0;
-    var url="http://localhost:5555/image";
+    var url="http://localhost:8432/image";
 	
     const response = await fetch(url, {
     method: 'POST', 

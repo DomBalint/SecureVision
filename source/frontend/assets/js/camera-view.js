@@ -22,7 +22,7 @@ async function get_data() {
 		// Get the latest image posted by required camera
     var data = {camera_num: camera_id};
     var status = 0;
-    var url="http://localhost:5555/image";
+    var url="http://localhost:8432/image";
 	
     const response = await fetch(url, {
     method: 'POST', 
@@ -73,7 +73,7 @@ async function get_data() {
 // Call the Feedback api
 async function Feedback(data) {
     var status = 0;
-    var url="http://localhost:5555/image/feedback";
+    var url="http://localhost:8432/image/feedback";
 	
     const response = await fetch(url, {
     method: 'PUT', 
