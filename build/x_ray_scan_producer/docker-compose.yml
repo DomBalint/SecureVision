@@ -5,7 +5,7 @@ services:
   x_ray_scan_producer:
     image: ${SV_REGISTRY}/x_ray_scan_producer:1.0.0
     build:
-      context: ${SV_HOME}/source/components/simulator
+      context: ${SV_HOME}/
       dockerfile: ${SV_HOME}/build/x_ray_scan_producer/Dockerfile
       args:
         SV_REGISTRY: ${SV_REGISTRY}
