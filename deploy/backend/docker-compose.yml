@@ -1,0 +1,19 @@
+---
+version: '3.4'
+
+services:
+
+  sv_backend:
+    image: ${SV_REGISTRY}/sv_backend:1.0.0
+    hostname: sv-backend
+    container_name: sv-backend
+    restart: always
+    ports:
+      - 8432:8432
+    command: sleep 3000
+    environment:
+      SV_HOME: '/home/svadm'
+    env_file:
+      - ./app.env
+    volumes:
+      - ${SV_HOME}source/threat_detection/datasets/predictions/:/home/svadm/predictions
