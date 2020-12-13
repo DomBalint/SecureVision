@@ -5,7 +5,7 @@ services:
   threat_predictor:
     image: ${SV_REGISTRY}/threat_predictor:1.0.1
     build:
-      context: ${SV_HOME}/source/components/threat_predictor
+      context: ${SV_HOME}/
       dockerfile: ${SV_HOME}/build/threat_predictor/Dockerfile
       args:
         SV_REGISTRY: ${SV_REGISTRY}
