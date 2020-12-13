@@ -35,4 +35,4 @@ api.add_resource(CameraApi, '/cameras')
 if __name__ == '__main__':
     
     port = 5555
-    app.run(port=port, debug=False)
+    app.run(hostname='0.0.0.0', port=port, debug=False)
