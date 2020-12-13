@@ -5,7 +5,7 @@ services:
   backend:
     image: ${SV_REGISTRY}/sv_backend:1.0.0
     build:
-      context: ${SV_HOME}/source/backend
+      context: ${SV_HOME}/
       dockerfile: ${SV_HOME}/build/backend/Dockerfile
       args:
         SV_REGISTRY: ${SV_REGISTRY}
