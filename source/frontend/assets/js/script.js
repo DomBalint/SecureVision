@@ -1,6 +1,6 @@
 // Check if the user is already loged in
 document.onload = function onload(){
-	if (window.location.pathname != 'login.html'){
+	if (window.location.pathname !== 'login.html'){
 			if (!checkCookie('user_id')){
 				window.location = "login.html";
 			}
@@ -19,11 +19,11 @@ element.onclick = function(event) {
 
 async function Login(data) {
     var status = 0;
-    var url="http://localhost:8432/user/login";
+    var url="http://localhost:5000/user/login";
 	
     const response = await fetch(url, {
     method: 'POST', 
-    mode: 'cors', 
+    mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },

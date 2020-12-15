@@ -55,6 +55,8 @@ class ImageApi(Resource):
         camera_num = int(args['camera_num'])
         abort_if_camera_or_image_are_not_found(camera_num)
         last_image = img_handler_instance.img_last_by_cam_id(camera_num)
+        if last_image is None:  # if the camera does not have any images assigned to it then the
+            abort(Status.NOT_FOUND, message=f"Camera {camera_num} has no images not found!", headers=headers)
         last_image = {'image_id': last_image.id, 'url': last_image.img_path}
         return last_image, Status.OK, headers
 

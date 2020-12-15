@@ -47,10 +47,10 @@ def query_user_by_id(user_id):
 
 class UserApi(Resource):
 
-    def get(self):
-        headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('login.html'), 200, headers)
-    #     return {'ok': "good job"}, Status.OK, headers
+    # def get(self):
+    #     headers = {'Content-Type': 'text/html'}
+    #     return make_response(render_template('login.html'), 200, headers)
+    # #     return {'ok': "good job"}, Status.OK, headers
 
     def post(self):
         args = parser.parse_args()

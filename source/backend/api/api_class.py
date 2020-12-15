@@ -10,7 +10,7 @@ from flask_restful import Api
 from camera_api import CameraApi
 from image_api import ImageApi, FeedbackApi
 from user_api import UserApi
-from svlib.svtools import svtools as svt
+# from svlib.svtools import svtools as svt
 
 """
 Run the API and setup the routes
@@ -40,5 +40,5 @@ api.add_resource(CameraApi, '/cameras')
 
 if __name__ == '__main__':
     
-    port = svt.conf.get('api', 'port')
-    app.run(host='0.0.0.0', port=port, debug=True)
+    # port = svt.conf.get('api', 'port')
+    app.run(host='0.0.0.0', port=5000, debug=True)
