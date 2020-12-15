@@ -51,6 +51,7 @@ class Configs(containers.DeclarativeContainer):
         "db_name": "predictions",
     })
 
+
 class Databases(containers.DeclarativeContainer):
     base_connection = AttributeFactory(BaseConnection, config=Configs.config)
     base_session_maker = base_connection.session_maker()
