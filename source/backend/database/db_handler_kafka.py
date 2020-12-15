@@ -34,19 +34,21 @@ class DatabaseLoader:
         """
         path_image = message["outputImagePath"]
         producer_id = message["producerID"] + 1
-        img_id = self.img_handler_instance.add_image(img_path=path_image, camera_id=producer_id)
+        if path_image:
+            if len(path_image) > 1:
 
-        if message["prediction"]:
-            assert len(message["confidenceScores"]) == len(message["predictedObjects"]) == len(message["boundingBoxes"])
-            for confidence, obj_type, bbox in zip(message["confidenceScores"], message["predictedObjects"],
-                                                  message["boundingBoxes"]):
-                X, Y, W, H = bbox
-                self.ann_handler_instance.add_annotations_from_manual(img_id=img_id, obj_type=obj_type,
-                                                                      obj_conf=confidence, left_x=X, left_y=Y,
-                                                                      length=W,
-                                                                      width=H)
-                log.info(f"Uploaded object: {obj_type}\n")
-                log.info(f"Confidence score: {confidence}\n")
+                img_id = self.img_handler_instance.add_image(img_path=path_image, camera_id=producer_id)
+
+                if message["prediction"]:
+                    for confidence, obj_type, bbox in zip(message["confidenceScores"], message["predictedObjects"],
+                                                          message["boundingBoxes"]):
+                        X, Y, W, H = bbox
+                        self.ann_handler_instance.add_annotations_from_manual(img_id=img_id, obj_type=obj_type,
+                                                                              obj_conf=confidence, left_x=X, left_y=Y,
+                                                                              length=W,
+                                                                              width=H)
+                        log.info(f"Uploaded object: {obj_type}\n")
+                        log.info(f"Confidence score: {confidence}\n")
 
     def get_predicted_images(self) -> None:
         """"""
