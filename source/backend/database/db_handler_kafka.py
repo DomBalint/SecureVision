@@ -33,7 +33,7 @@ class DatabaseLoader:
         :return:
         """
         path_image = message["outputImagePath"]
-        producer_id = message["producerID"] + 1
+        producer_id = message["producerID"]
         if path_image:
             if len(path_image) > 1:
 
