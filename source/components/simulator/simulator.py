@@ -57,6 +57,7 @@ class XRayProducer:
         """
         img = self.scan_image()
         xray_scan = self.get_xray_scan_schema(img)
+        log.info(xray_scan)
         # validate the message before publishing
         self.schema_helper.validate(xray_scan)
         self.kafka_helper.publish(self.kafka_topic, xray_scan)
