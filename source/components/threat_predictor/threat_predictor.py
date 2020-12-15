@@ -159,9 +159,9 @@ class ThreatPredictor:
 
         pred_classes, boxes, scores = self.predict_image(path_image)
 
-        log.info(f"Detected classes: {pred_classes}\n")
-        log.info(f"Predicted scores: {scores}\n")
-        log.info(f"Predicted bounding boxes: {boxes}\n")
+        #log.info(f"Detected classes: {pred_classes}\n")
+        #log.info(f"Predicted scores: {scores}\n")
+        #log.info(f"Predicted bounding boxes: {boxes}\n")
         # No drawing of bounding boxes on the image if there is no threat
         if pred_classes:
             parts = message["imageID"].split('.')
@@ -180,6 +180,7 @@ class ThreatPredictor:
         }
         threat_prediction = self.get_threat_prediction_schema(message,
                                                               predictions)
+        log.info(threat_prediction)
         self.tp_schema_helper.validate(threat_prediction)
         self.kafka_helper.publish(self.kafka_output_topic, threat_prediction)
 
