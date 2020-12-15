@@ -9,3 +9,5 @@ source/threat_detection/metrics/__pycache__/
 source/threat_detection/transformations/__pycache__/
 
 source/threat_detection/utils/__pycache__/
+
+source/svlib/__pycache__/

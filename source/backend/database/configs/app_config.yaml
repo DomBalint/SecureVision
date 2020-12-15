@@ -1,2 +1,3 @@
 database_loader:
   kafka_input_topic: predictions
+  number_of_cameras: 2

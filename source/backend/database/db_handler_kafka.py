@@ -12,8 +12,10 @@ class DatabaseLoader:
     def __init__(
             self,
             kafka_input_topic: str,
+            number_of_cameras: int,
     ) -> None:
         self.kafka_input_topic = kafka_input_topic
+        self.num_of_cams = int(number_of_cameras)
         self.kafka_helper = svt.kafka
 
         self.camera_handler_instance = Handlers.cam_handler()
@@ -22,7 +24,7 @@ class DatabaseLoader:
         self.img_handler_instance = Handlers.img_handler()
         self.fb_handler_instance = Handlers.fb_handler()
 
-        create_db()
+        create_db(self.num_of_cams)
 
     def upload_to_db(self, message: dict) -> None:
         """
