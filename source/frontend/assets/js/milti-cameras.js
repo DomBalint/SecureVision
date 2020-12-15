@@ -4,7 +4,7 @@ async function get_cameras() {
     var url = "http://localhost:8432/cameras";
     const response = await fetch(url, {
         method: 'GET',
-        mode: 'no-cors',
+        mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -46,7 +46,7 @@ async function get_image(camera_id) {
 
     const response = await fetch(url, {
         method: 'POST',
-        mode: 'no-cors',
+        mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
         },

@@ -27,7 +27,7 @@ async function get_last_image() {
 
     const response = await fetch(url, {
         method: 'POST',
-        mode: 'no-cors',
+        mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -77,7 +77,7 @@ async function Feedback(data) {
 
     const response = await fetch(url, {
         method: 'PUT',
-        mode: 'no-cors',
+        mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
         },
