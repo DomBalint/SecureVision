@@ -38,6 +38,7 @@ class DatabaseLoader:
             if len(path_image) > 1:
 
                 img_id = self.img_handler_instance.add_image(img_path=path_image, camera_id=producer_id)
+                log.info(f"Uploaded image: {img_id} path: {str(path_image).split('/')[-1]}\n")
 
                 if message["prediction"]:
                     for confidence, obj_type, bbox in zip(message["confidenceScores"], message["predictedObjects"],
