@@ -7,6 +7,7 @@ from PIL import Image
 import torch
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from torchvision.ops import nms
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
 
@@ -18,11 +19,11 @@ log = svt.log
 class ThreatPredictor:
 
     def __init__(
-        self,
-        path_model: str,
-        model_name: str,
-        kafka_input_topic: str,
-        kafka_output_topic: str
+            self,
+            path_model: str,
+            model_name: str,
+            kafka_input_topic: str,
+            kafka_output_topic: str
     ) -> None:
         self.path_model = path_model
         self.model_name = model_name
@@ -82,6 +83,21 @@ class ThreatPredictor:
 
         output = self.model(image)
 
+        # CODE FOR THE NMS COMMENT OUT IF NOT NEEDED
+        new_output = []
+
+        for idx, output_ in enumerate(output):
+            preds = output[idx]['boxes']
+            scores = output[idx]['scores']
+            keep = nms(preds, scores, 0.5)
+            new_dict = {'boxes': output[idx]['boxes'][keep],
+                        'scores': output[idx]['scores'][keep],
+                        'labels': output[idx]['labels'][keep],
+                        }
+            new_output.append(new_dict)
+        output = new_output
+        # CODE FOR THE NMS
+
         # get all predicted class names
         pred_classes = np.array([
             self.classes[i] for i in output[0]['labels'].cpu().numpy()
@@ -101,10 +117,10 @@ class ThreatPredictor:
         return pred_classes, boxes, scores
 
     def draw_bounding_boxes(
-        self,
-        path_image: str,
-        boxes: list,
-        output_image_path: str
+            self,
+            path_image: str,
+            boxes: list,
+            output_image_path: str
     ) -> None:
         """
 
@@ -127,9 +143,9 @@ class ThreatPredictor:
         cv2.imwrite(output_image_path, image)
 
     def get_threat_prediction_schema(
-        self,
-        message: dict,
-        predictions: dict
+            self,
+            message: dict,
+            predictions: dict
     ) -> dict:
         """
 
@@ -159,9 +175,9 @@ class ThreatPredictor:
 
         pred_classes, boxes, scores = self.predict_image(path_image)
 
-        #log.info(f"Detected classes: {pred_classes}\n")
-        #log.info(f"Predicted scores: {scores}\n")
-        #log.info(f"Predicted bounding boxes: {boxes}\n")
+        # log.info(f"Detected classes: {pred_classes}\n")
+        # log.info(f"Predicted scores: {scores}\n")
+        # log.info(f"Predicted bounding boxes: {boxes}\n")
         # No drawing of bounding boxes on the image if there is no threat
         if pred_classes:
             parts = message["imageID"].split('.')
@@ -194,7 +210,6 @@ class ThreatPredictor:
 
 
 if __name__ == '__main__':
-
     cr = svt.conf
     app_conf = cr.parse_yaml(
         os.path.join(os.getcwd(), 'configs', 'app_config.yaml')
@@ -203,4 +218,3 @@ if __name__ == '__main__':
     tp = ThreatPredictor(**app_conf)
 
     tp.get_scanned_images()
-
