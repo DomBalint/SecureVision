@@ -33,7 +33,7 @@ class DatabaseLoader:
         :return:
         """
         producer_id = message["producerID"]
-        img_path = message["outputImagePath"] if message["outputImagePath"] else message["imagePath"]
+        img_path = message["outputImagePath"] if message["outputImagePath"] else (message["imagePath"] + '/' + message["imageID"])
 
         img_id = self.img_handler_instance.add_image(img_path=img_path, camera_id=producer_id)
         log.info(f"Uploaded image: {img_id} path: {str(img_path).split('/')[-1]}\n")
