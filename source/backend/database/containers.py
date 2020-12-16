@@ -32,15 +32,21 @@ class AttributeFactory(providers.Provider):
 
 class Configs(containers.DeclarativeContainer):
     config = providers.Configuration('config')
+
     # TODO: BETTER PLACE FOR CONFIG READER
-    config.override({
-        "remote": True,
-        "db_dialect": "postgresql",
-        "db_user": "gixvhnjqlweyta",
-        "db_pwd": "1ee75b62d9b9e840482eadf7d0e11d2a35ea8c226275d21d3073da65c83ad94a",
-        "db_host": "ec2-54-247-79-178.eu-west-1.compute.amazonaws.com",
-        "db_name": "der4mdbrf62is8",
-    })
+
+    # REMOTE HEROKU DB
+
+    # config.override({
+    #     "remote": True,
+    #     "db_dialect": "postgresql",
+    #     "db_user": "gixvhnjqlweyta",
+    #     "db_pwd": "1ee75b62d9b9e840482eadf7d0e11d2a35ea8c226275d21d3073da65c83ad94a",
+    #     "db_host": "ec2-54-247-79-178.eu-west-1.compute.amazonaws.com",
+    #     "db_name": "der4mdbrf62is8",
+    # })
+
+    # LOCAL DB
 
     # config.override({
     #     "remote": True,
@@ -50,7 +56,18 @@ class Configs(containers.DeclarativeContainer):
     #     "db_host": "192.168.1.104:5432",
     #     "db_name": "predictions",
     # })
-    #
+
+    # REMOTE AMAZON DB
+
+    config.override({
+        "remote": True,
+        "db_dialect": "postgresql",
+        "db_user": "Secureadmin",
+        "db_pwd": "Securevision",
+        "db_host": "secure-vision-aws.cvj3cybd5scy.us-east-1.rds.amazonaws.com:5432",
+        "db_name": "postgres",
+    })
+
 
 class Databases(containers.DeclarativeContainer):
     base_connection = AttributeFactory(BaseConnection, config=Configs.config)
