@@ -32,24 +32,22 @@ class DatabaseLoader:
         :param message:
         :return:
         """
-        path_image = message["outputImagePath"]
         producer_id = message["producerID"]
-        if path_image:
-            if len(path_image) > 1:
+        img_path = message["outputImagePath"] if message["outputImagePath"] else message["imagePath"]
 
-                img_id = self.img_handler_instance.add_image(img_path=path_image, camera_id=producer_id)
-                log.info(f"Uploaded image: {img_id} path: {str(path_image).split('/')[-1]}\n")
+        img_id = self.img_handler_instance.add_image(img_path=img_path, camera_id=producer_id)
+        log.info(f"Uploaded image: {img_id} path: {str(img_path).split('/')[-1]}\n")
 
-                if message["prediction"]:
-                    for confidence, obj_type, bbox in zip(message["confidenceScores"], message["predictedObjects"],
-                                                          message["boundingBoxes"]):
-                        X, Y, W, H = bbox
-                        self.ann_handler_instance.add_annotations_from_manual(img_id=img_id, obj_type=obj_type,
-                                                                              obj_conf=confidence, left_x=X, left_y=Y,
-                                                                              length=W,
-                                                                              width=H)
-                        log.info(f"Uploaded object: {obj_type}\n")
-                        log.info(f"Confidence score: {confidence}\n")
+        if message["prediction"]:
+            for confidence, obj_type, bbox in zip(message["confidenceScores"], message["predictedObjects"],
+                                                  message["boundingBoxes"]):
+                X, Y, W, H = bbox
+                self.ann_handler_instance.add_annotations_from_manual(img_id=img_id, obj_type=obj_type,
+                                                                      obj_conf=confidence, left_x=X, left_y=Y,
+                                                                      length=W,
+                                                                      width=H)
+                log.info(f"Uploaded object: {obj_type}\n")
+                log.info(f"Confidence score: {confidence}\n")
 
     def get_predicted_images(self) -> None:
         """"""
