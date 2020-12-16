@@ -2,9 +2,9 @@ import sys
 import os
 
 sys.path.append(os.path.abspath('./'))
+from flask_cors import CORS
 
 from flask import Flask
-from flask_cors import CORS
 from flask_restful import Api
 
 from camera_api import CameraApi
@@ -30,7 +30,7 @@ app = Flask(
 )
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 api = Api(app)
-app.config['CORS_ORIGINS'] = '*'
+# app.config['CORS_ORIGINS'] = '*'
 cors = CORS(app)
 
 api.add_resource(UserApi, '/user/login')

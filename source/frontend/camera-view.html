@@ -45,10 +45,10 @@
         <div class="col">
             <div class="alert alert-success" role="alert"><span><strong>Multiple threats have been detected</strong><br></span>
             </div>
-            <ul class="list-group">
-                <li class="list-group-item"><span>Gun: 55%</span></li>
-                <li class="list-group-item"><span>Gun: 60%</span></li>
-                <li class="list-group-item"><span>Knife: 90%</span></li>
+            <ul id="threat_list" class="list-group">
+                <!--                <li class="list-group-item"><span>Gun: 55%</span></li>-->
+                <!--                <li class="list-group-item"><span>Gun: 60%</span></li>-->
+                <!--                <li class="list-group-item"><span>Knife: 90%</span></li>-->
             </ul>
             <div class="row">
                 <div class="col">
@@ -63,14 +63,17 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-8 d-flex justify-content-center align-items-center align-content-center align-self-center">
-            <img class="img-fluid" src="assets/img/camera-offline.jpg" alt="detection" id="image"></div>
+        <div class="col-lg-8 justify-content-center">
+            <img hidden class="img-fluid" src="assets/img/camera-offline.jpg" alt="detection" id="image">
+            <canvas style="position: relative;" class="img-fluid" id="myCanvas">Your browser does not support the HTML5
+                canvas tag.
+            </canvas>
+        </div>
     </div>
 </div>
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="assets/js/camera-view.js"></script>
-<!--    <script src="assets/js/milti-cameras.js"></script>-->
 <script src="assets/js/script.js"></script>
 </body>
 

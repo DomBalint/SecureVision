@@ -12,6 +12,7 @@ parser = reqparse.RequestParser()
 
 # The objects retrieved from the databse should look something like this
 camera_handler_instance = Handlers.cam_handler()
+image_handler_instance = Handlers.img_handler()
 
 # Add exactly four cameras to the database
 # mock_cameras = {
@@ -52,13 +53,22 @@ class CameraApi(Resource):
         Stop getting the feed from the camera
         """
 
+        abort_if_there_are_no_available_cameras()
         args = parser.parse_args()
         camera_num = args['camera_num']
-        abort_if_there_are_no_available_cameras()
-        # Check if the camera is on, then stop the feed
-        success = camera_handler_instance.update_stop_camera(camera_num)
-        if success:
-            return {"id": camera_num}, Status.OK, headers
-        # Camera is not running or it does not exist
-        else:
-            return None, Status.NO_CONTENT, headers
+        images_list = image_handler_instance.imgs_by_cam_id(camera_num)
+        images_list = [image.id for image in images_list]
+        return list(images_list), Status.OK, headers
+
+    def put(self):
+        pass
+        # args = parser.parse_args()
+        # camera_num = args['camera_num']
+        # abort_if_there_are_no_available_cameras()
+        # # Check if the camera is on, then stop the feed
+        # success = camera_handler_instance.update_stop_camera(camera_num)
+        # if success:
+        #     return {"id": camera_num}, Status.OK, headers
+        # # Camera is not running or it does not exist
+        # else:
+        #     return None, Status.NO_CONTENT, headers

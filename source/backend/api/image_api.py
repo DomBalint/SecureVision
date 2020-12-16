@@ -11,6 +11,7 @@ parser = reqparse.RequestParser()
 camera_handler_instance = Handlers.cam_handler()
 img_handler_instance = Handlers.img_handler()
 fb_handler_instance = Handlers.fb_handler()
+ann_handler_instance = Handlers.ann_handler()
 
 # The objects retrieved from the databse should look something like this
 # mock_data = {
@@ -52,12 +53,24 @@ class ImageApi(Resource):
         """
 
         args = parser.parse_args()
-        camera_num = int(args['camera_num'])
-        abort_if_camera_or_image_are_not_found(camera_num)
-        last_image = img_handler_instance.img_last_by_cam_id(camera_num)
+        # try:
+        image_id = int(args['image_id'])
+        # except Exception as ex:
+        #     abort(Status.NOT_FOUND, message=f"Image not found", headers=headers)
+        # abort_if_camera_or_image_are_not_found(camera_num)
+        last_image = img_handler_instance.img_by_id(image_id)
+
         if last_image is None:  # if the camera does not have any images assigned to it then the
-            abort(Status.NOT_FOUND, message=f"Camera {camera_num} has no images not found!", headers=headers)
-        last_image = {'image_id': last_image.id, 'url': last_image.img_path}
+            abort(Status.NOT_FOUND, message=f"Camera {image_id} has no images not found!", headers=headers)
+
+        last_image_annotation = ann_handler_instance.anns_by_img_id(last_image.id)
+        detections = [{'x': threat.left_x, 'y': threat.left_y,
+                       'width': threat.width, 'height': threat.length,
+                       "threat": threat.obj_type, "confidence": threat.obj_confidence}
+                      for threat in last_image_annotation]
+
+        print(detections)
+        last_image = {'image_id': last_image.id, 'url': last_image.img_path, "detections": detections}
         return last_image, Status.OK, headers
 
     def put(self):
