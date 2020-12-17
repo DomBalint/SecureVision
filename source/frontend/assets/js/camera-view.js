@@ -1,9 +1,9 @@
 // On page load check for the camera Id in the url
 const queryString = window.location.search;
-console.log(queryString);
+// console.log(queryString);
 const urlParams = new URLSearchParams(queryString);
 const camera_id = urlParams.get('id');
-console.log(camera_id);
+// console.log(camera_id);
 
 // Submit the a positive feedback using the like button
 var like = document.getElementById("like");
@@ -40,13 +40,13 @@ async function get_image_info(da) {
     }).then(function (response) {
 
         // Log some information for debugging
-        console.log(response);
-        console.log(response.headers.get('Content-Type'));
-        console.log(response.headers.get('Date'));
-        console.log(response.status);
-        console.log(response.statusText);
-        console.log(response.type);
-        console.log(response.url);
+        // console.log(response);
+        // console.log(response.headers.get('Content-Type'));
+        // console.log(response.headers.get('Date'));
+        // console.log(response.status);
+        // console.log(response.statusText);
+        // console.log(response.type);
+        // console.log(response.url);
         if (response.status === 200) {
             return response.json();
         } else {
@@ -55,25 +55,25 @@ async function get_image_info(da) {
 
     }).then(function (data) {
         if (data != null) {
-            url = data['url'].substring(0, 18) + ".jpg";
+            if (data['url'].startsWith("predictions"))
+                url = data['url'].split("_")[0] + ".jpg";
+            else
+                url = "predictions/" + data['url'].split("/")[1];
+            console.log(url)
             console.log(data['image_id']);
-            console.log(url);
             //TODO: modify after the model connection to the database
             if (document.getElementById("image").src !== url)
                 document.getElementById("image").src = url;
             image_id = data['image_id'];
             var detections = data['detections'];
-            // if (detections !== undefined) {
-            //     for (var i = 0; i < detections.length; i++) {
-            //         console.log(detections[i]['threat']);
-            //         console.log(detections[i]['confidence']);
-            //     }
-            //     // TODO: inject the detectoins to the list
-            // }
-            // sleep(2000);
-            // draw_bb(174, 354, 162, 102);
-            if (detections.length > 0)
-                draw_multiple_bb(detections);
+            console.log(detections.length);
+            draw_multiple_bb(detections);
+
+            // if (detections.length !== 0)
+            //     draw_multiple_bb(detections);
+            // else
+            //     clear_detections();
+
         }
     }).catch((error) => {
         console.error('Error:', error);
@@ -103,13 +103,13 @@ async function get_camera_images() {
     }).then(function (response) {
 
         // Log some information for debugging
-        console.log(response);
-        console.log(response.headers.get('Content-Type'));
-        console.log(response.headers.get('Date'));
-        console.log(response.status);
-        console.log(response.statusText);
-        console.log(response.type);
-        console.log(response.url);
+        // console.log(response);
+        // console.log(response.headers.get('Content-Type'));
+        // console.log(response.headers.get('Date'));
+        // console.log(response.status);
+        // console.log(response.statusText);
+        // console.log(response.type);
+        // console.log(response.url);
         if (response.status === 200) {
             return response.json();
         } else {
@@ -160,13 +160,13 @@ async function Feedback(data) {
     }).then(function (response) {
 
         // Log some information for debugging
-        console.log(response);
-        console.log(response.headers.get('Content-Type'));
-        console.log(response.headers.get('Date'));
-        console.log(response.status);
-        console.log(response.statusText);
-        console.log(response.type);
-        console.log(response.url);
+        // console.log(response);
+        // console.log(response.headers.get('Content-Type'));
+        // console.log(response.headers.get('Date'));
+        // console.log(response.status);
+        // console.log(response.statusText);
+        // console.log(response.type);
+        // console.log(response.url);
 
         if (response.status === 200) {
             return response.json();
@@ -177,13 +177,24 @@ async function Feedback(data) {
     }).then(function (data) {
         if (data != null) {
             alert("Feedback submitted successfully!");
-            console.log(data);
+            // console.log(data);
         }
 
     }).catch((error) => {
         console.error('Error:', error);
     });
 }
+
+function draw_image() {
+
+}
+
+window.onload = function () {
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    var img = document.getElementById("image");
+    ctx.drawImage(img, 10, 10);
+};
 
 function draw_multiple_bb(detections) {
 
@@ -196,17 +207,30 @@ function draw_multiple_bb(detections) {
     ctx.canvas.height = new_height;
 
     img.onload = function () {
-        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, new_width, new_height);
-        // sleep(100);
+        ctx.drawImage(img, 10, 10, img.width, img.height, 0, 0, new_width, new_height);
         var canvas = document.getElementById('myCanvas');
         var context = canvas.getContext('2d');
 
+        var boot_alert = document.getElementById("boot_alert");
+        if (detections.length === 1) {
+            boot_alert.innerText = "A threat has been detected!";
+            boot_alert.classList = 'alert alert-danger';
+        }
+        else if (detections.length > 1) {
+            boot_alert.innerText = "Multiple threats have been detected!";
+            boot_alert.classList = 'alert alert-danger';
+        } else {
+            boot_alert.innerText = "All clear!";
+            boot_alert.classList = 'alert alert-success';
+
+        }
 
         var list = document.getElementById('threat_list');
         list.innerHTML = "";
+        colors = ['red', 'blue', 'green', 'black', 'yellow'];
         for (var i = 0; i < detections.length; i++) {
-            console.log(detections[i]['threat']);
-            console.log(detections[i]['confidence'])
+            // console.log(detections[i]['threat']);
+            // console.log(detections[i]['confidence'])
 
             var threat = detections[i]['threat'];
             var confidence = detections[i]['confidence'];
@@ -215,16 +239,16 @@ function draw_multiple_bb(detections) {
             var width = detections[i]['height'];
             var height = detections[i]['width'];
 
-            if (confidence < .5) {
-                continue;
-            }
+            // if (confidence < .5) {
+            //     continue;
+            // }
             context.beginPath();
             context.rect(x * new_width / img.width, y * new_height / img.height
                 , width * new_width / img.width, height * new_height / img.height);
             // context.fillStyle = 'yellow';
             // context.fill();
-            context.lineWidth = 2;
-            context.strokeStyle = 'red';
+            context.lineWidth = 3;
+            context.strokeStyle = colors[i % colors.length];
             context.stroke();
 
 
@@ -253,10 +277,9 @@ function draw_bb(x, y, width, height) {
     ctx.canvas.height = img.height;
 
     img.onload = function () {
-        alert("image is loaded");
         ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, new_width, new_height);
-        var canvas = document.getElementById('myCanvas');
-        var context = canvas.getContext('2d');
+        // var canvas = document.getElementById('myCanvas');
+        var context = c.getContext('2d');
 
         context.beginPath();
         context.rect(x * new_width / img.width, y * new_height / img.height

@@ -77,7 +77,10 @@ async function get_image_info(da, cam_num) {
 
     }).then(function (data) {
         if (data != null) {
-            url = data['url'].substring(0, 18) + ".jpg";
+            if (data['url'].startsWith("predictions"))
+                url = data['url'].split("_")[0] + ".jpg";
+            else
+                url = "predictions/" + data['url'].split("/")[1];
             console.log(data['image_id']);
             console.log(url);
             //TODO: modify after the model connection to the database
